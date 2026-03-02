@@ -1,0 +1,304 @@
+# Product Domain - Business Logic
+
+## Domain Purpose
+The Product Domain manages the full product lifecycle, including the shelf experience (public catalog) and inventory management (materials, basement, stock movements, and quantity tracking). Shelf and inventory are features within the same domain, surfaced through a single Product API.
+
+## Data Layer Ownership
+The Product Domain owns and manages the following DynamoDB tables:
+- shelf_items: Main product records actively for sale
+- shelf_media: Media associated with products
+- shelf_materials: Materials used in products
+- shelf_process_steps: Process documentation for products
+- shelf_batches: Batch tracking for limited items
+- shelf_certificates: Digital provenance certificates
+- categories: Product categories
+- material_inventory: Raw materials inventory
+- stock_movements: Inventory movement audit trail
+- suppliers: Supplier records
+- basement_products: Finished products removed from shelf
+- product_quantities: Quantity tracking for products on shelf
+
+## Business Rules
+
+### 1. Shelf Item Lifecycle
+- Products start as draft status
+- Products must be published to become active on shelf
+- Only verified makers can publish products
+- Active products on shelf are visible to collectors
+- Products can be paused, sold out, or unpublished (moved to basement)
+- Status transitions: draft -> published -> (paused/sold_out/unpublished)
+
+### 2. Product Types
+- one_of_one: Unique, single item
+- limited_batch: Limited quantity batch
+- made_to_order: Custom orders, unlimited quantity
+- Product type affects quantity management and ordering rules
+
+### 3. Media Management
+- Products must have at least one image
+- Media order is important (first image is primary)
+- Videos are optional but recommended
+- Media must be uploaded to S3 before product creation
+
+### 4. Material Transparency
+- Materials must be documented for provenance
+- Material source tracking (locally_sourced, upcycled, sustainable)
+- Sustainability flags affect discovery ranking
+- Material certifications can be attached
+
+### 5. Process Documentation
+- Process steps document the creation journey
+- Steps can include media (images/videos)
+- Duration tracking helps with made-to-order estimates
+- Process steps enhance trust and storytelling
+
+### 6. Batch Management
+- Limited batch products track remaining quantity
+- Batches are created when items are produced
+- Batch tracking enables provenance certificates
+- Sold out status is automatic when quantity reaches zero
+
+### 7. Provenance Certificates
+- Certificates are generated for completed orders
+- Each certificate has a unique QR code
+- Certificates include material and creation metadata
+- Certificates provide digital provenance passport
+
+### 8. Basement Integration
+- Products can be unpublished and moved to basement
+- Basement products retain all metadata for potential re-publishing
+- Quantity tracking syncs with inventory feature for products on shelf
+- Re-publishing from basement restores product to active shelf
+
+### 9. Inventory & Materials
+- Raw materials are tracked with stock status, reorder thresholds, and units
+- Stock movements are recorded for purchases, usage, waste, and adjustments
+- Suppliers maintain sourcing and lead-time data
+- Product quantities track available stock for shelf items
+
+## Data Layer Interactions
+
+### Read Operations
+- Read shelf item by id
+- Read shelf items by maker_user_id
+- Read shelf items by category_id
+- Read active shelf items by status
+- Read shelf media by shelf_item_id
+- Read shelf materials by shelf_item_id
+- Read shelf process steps by shelf_item_id
+- Read shelf certificates by shelf_item_id or certificate_id
+- Read categories
+
+### Write Operations
+- Create/update/delete shelf items
+- Add/remove shelf media
+- Add/remove shelf materials
+- Add/remove process steps
+- Create product batches
+- Generate product certificates
+- Update shelf item status
+- Update quantity available
+- Unpublish shelf item (triggers basement move)
+
+### Data Integrity Rules
+- Shelf items must reference valid maker_user_id from Maker Domain
+- Category_id must reference valid category
+- Media URLs must be valid S3 URLs
+- Quantity cannot exceed batch totals
+- Certificates must reference valid order_id from Order Domain
+- Status transitions must follow state machine rules
+- Unpublish triggers ShelfItemUnpublished event for inventory feature processing
+
+## Event-Driven Communication
+
+### Events Published
+- ShelfItemCreated: When a product is created
+- ShelfItemPublished: When a product becomes active on shelf
+- ShelfItemUpdated: When product information changes
+- ShelfItemPaused: When a product is paused
+- ShelfItemSoldOut: When quantity reaches zero
+- ShelfItemUnpublished: When a product is removed from shelf (moves to basement)
+- CertificateGenerated: When a provenance certificate is created
+
+### Events Consumed
+- MakerVerified: From Maker Domain - required to publish products
+- OrderCreated: From Order Domain - affects quantity available
+- OrderCompleted: From Order Domain - triggers certificate generation
+- OrderCanceled: From Order Domain - may restore quantity
+- ProductMovedFromBasement: From inventory feature - enables re-publishing
+
+## Cross-Domain Boundaries
+
+### What This Domain Owns
+- Products on shelf (active catalog)
+- Categories
+- Product media and materials
+- Process documentation
+- Provenance certificates
+- Product visibility and status on shelf
+
+### What This Domain Does NOT Own
+- Maker profiles (Maker Domain)
+- Orders (Order Domain)
+- Payments (Payment Domain)
+- Reviews (Review & Trust Domain)
+- Discovery indexes (Discovery Domain)
+- Archived products in basement (inventory feature)
+- Product quantity totals (inventory feature)
+
+## Business Logic Constraints
+1. Only verified makers can publish products
+2. Products must have at least one image
+3. Quantity cannot be negative
+4. Sold out products cannot accept new orders
+5. Draft products are not visible to collectors
+6. Certificates can only be generated for completed orders
+7. Category must exist before product creation
+8. Product type determines quantity management rules
+9. Unpublishing a product triggers basement move via inventory feature
+10. Product quantity syncs with inventory feature for tracking
+
+## Domain Structure & Implementation
+
+### Directory Structure
+The Product Domain follows a structure similar to `/Users/jred/AWS/aedcor-backend/support_backend/lib`:
+
+```
+lib/
+├── constructs/
+│   ├── dynamodb/
+│   │   ├── product-tables/
+│   │   │   └── product-tables-construct.ts
+│   │   └── inventory-tables/
+│   │       └── inventory-tables-construct.ts
+│   ├── s3/
+│   │   └── product-media-buckets/
+│   │       └── product-media-buckets-construct.ts
+│   ├── lambda/
+│   │   ├── product/
+│   │       ├── create-product/
+│   │       ├── update-product/
+│   │       ├── publish-product/
+│   │       ├── pause-product/
+│   │       ├── get-product/
+│   │       ├── list-products/
+│   │       ├── add-product-media/
+│   │       ├── add-product-material/
+│   │       ├── add-process-step/
+│   │       ├── create-batch/
+│   │       ├── generate-certificate/
+│   │       └── event-consumer/
+│   │   └── inventory/
+│   │       └── ...
+│   └── appsync/
+│       └── product-appsync/
+│           └── product-appsync-construct.ts
+├── functions/
+│   ├── lambda/
+│   │   ├── product/
+│   │       ├── create-product/
+│   │       │   └── create-product-lambda.js
+│   │       ├── update-product/
+│   │       │   └── update-product-lambda.js
+│   │       ├── publish-product/
+│   │       │   └── publish-product-lambda.js
+│   │       ├── pause-product/
+│   │       │   └── pause-product-lambda.js
+│   │       ├── get-product/
+│   │       │   └── get-product-lambda.js
+│   │       ├── list-products/
+│   │       │   └── list-products-lambda.js
+│   │       ├── add-product-media/
+│   │       │   └── add-product-media-lambda.js
+│   │       ├── add-product-material/
+│   │       │   └── add-product-material-lambda.js
+│   │       ├── add-process-step/
+│   │       │   └── add-process-step-lambda.js
+│   │       ├── create-batch/
+│   │       │   └── create-batch-lambda.js
+│   │       ├── generate-certificate/
+│   │       │   └── generate-certificate-lambda.js
+│   │       └── event-consumer/
+│   │           └── event-consumer-lambda.js
+│   │   └── inventory/
+│   │       └── ...
+│   └── appsync-resolvers/
+│       └── product/
+│           ├── create-product-resolver.js
+│           ├── get-product-resolver.js
+│           └── list-products-resolver.js
+└── utils/
+    ├── response-utils.ts
+    ├── validation-utils.ts
+    ├── media-utils.ts
+    ├── certificate-generator.ts
+    └── event-publisher.ts
+```
+
+### Data Layer Interaction Patterns
+
+#### Direct Data Access
+- **Products**: Direct DynamoDB access via `products` table using `product_id` as partition key
+- **Product Media**: Direct DynamoDB access via `product_media` table using `product_id` (PK) and `media_id` (SK)
+- **Product Materials**: Direct DynamoDB access via `product_materials` table using `product_id` (PK) and `material_id` (SK)
+- **Process Steps**: Direct DynamoDB access via `product_process_steps` table using `product_id` (PK) and `step_id` (SK)
+- **Batches**: Direct DynamoDB access via `product_batches` table using `product_id` (PK) and `batch_id` (SK)
+- **Certificates**: Direct DynamoDB access via `product_certificates` table using `product_id` (PK) and `certificate_id` (SK)
+- **Categories**: Direct DynamoDB access via `categories` table using `category_id` as partition key
+
+#### Query Patterns
+- **Get product**: Single item read by `product_id`
+- **List products by maker**: GSI query by `maker_user_id`
+- **List products by category**: GSI query by `category_id`
+- **List active products**: GSI query by `status` = "active"
+- **Get product media**: Query by `product_id`
+- **Get product materials**: Query by `product_id`
+- **Get process steps**: Query by `product_id`
+- **Get batches**: Query by `product_id`
+- **Get certificates**: Query by `product_id` or GSI by `certificate_id`
+
+#### Write Patterns
+- **Create product**: DynamoDB transaction for product + initial media + materials
+- **Update product**: UpdateItem with status validation
+- **Publish product**: UpdateItem with verification check and status transition
+- **Add media**: PutItem with S3 URL validation
+- **Add material**: PutItem with material validation
+- **Add process step**: PutItem with step order management
+- **Create batch**: PutItem with quantity tracking
+- **Generate certificate**: PutItem with QR code generation
+
+### Business Logic Implementation
+
+#### Media Management
+- Media files uploaded to S3 before product creation
+- Media URLs validated and stored in DynamoDB
+- Media order maintained via sort key
+- Primary image is first media item
+
+#### Validation Layer
+- Product creation validates maker is verified (via Maker Domain events)
+- Product creation validates category exists
+- Media validation ensures at least one image
+- Quantity validation based on product type
+- Certificate generation validates order is completed (via Order Domain)
+
+#### Event Handling
+- **Event Consumer Lambda**: Processes events from other domains
+  - `MakerVerified` → Enables product publication
+  - `OrderCreated` → Decrements quantity available
+  - `OrderCompleted` → Triggers certificate generation
+  - `OrderCanceled` → Restores quantity available
+
+#### Data Consistency
+- Product creation uses DynamoDB transactions for atomicity
+- Quantity updates use atomic increment/decrement operations
+- Status transitions enforced with conditional writes
+- Certificate generation is idempotent
+
+#### Error Handling
+- Unverified maker → Return 403 Forbidden
+- Invalid category → Return 400 Bad Request
+- No media → Return 400 Bad Request
+- Insufficient quantity → Return 400 Bad Request
+- Invalid status transition → Return 400 Bad Request
+- Product not found → Return 404 Not Found

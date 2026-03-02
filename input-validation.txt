@@ -1,0 +1,544 @@
+================================================================================
+PRODUCT DOMAIN - INPUT VALIDATION RULES
+================================================================================
+
+This document defines all input validation rules for the Product Domain GraphQL API.
+All mutations and queries must validate inputs according to these rules.
+
+The Product Domain includes:
+- **Shelf feature**: Products actively for sale (shelf items, media, materials, etc.)
+- **Inventory feature**: Raw materials, suppliers, stock movements, basement products
+
+The domain uses a single unified Product AppSync API with a merged schema for both features.
+
+================================================================================
+MUTATION: createProduct
+================================================================================
+
+Input: CreateProductInput!
+- makerUserId: ID! (required)
+- title: String! (required)
+- description: String! (required)
+- categoryId: ID! (required)
+- productType: ProductType! (required)
+- basePrice: Float! (required)
+- quantityAvailable: Int (optional)
+
+Validation Rules:
+1. makerUserId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must match authenticated user's ID
+   - Maker must be verified (optional business rule)
+
+2. title:
+   - Minimum length: 3 characters
+   - Maximum length: 200 characters
+   - Cannot be all whitespace
+   - Trim leading/trailing whitespace
+   - Must contain at least one letter or number
+
+3. description:
+   - Minimum length: 20 characters
+   - Maximum length: 5000 characters
+   - Cannot be all whitespace
+   - Trim leading/trailing whitespace
+   - Can contain letters, numbers, spaces, punctuation, and basic formatting
+
+4. categoryId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing category
+
+5. productType:
+   - Must be one of: ONE_OF_ONE, LIMITED_BATCH, MADE_TO_ORDER
+   - Case-sensitive enum value
+
+6. basePrice:
+   - Must be a positive number
+   - Minimum: 0.01
+   - Maximum: 999999.99
+   - Must have at most 2 decimal places
+   - Cannot be negative or zero
+
+7. quantityAvailable (if provided):
+   - Must be a positive integer
+   - Minimum: 1
+   - Maximum: 10000
+   - Required if productType is LIMITED_BATCH
+   - Must be null if productType is ONE_OF_ONE or MADE_TO_ORDER
+
+Business Rules:
+- Maker must be verified (optional)
+- Product is created in DRAFT status
+- Category must exist and be active
+- quantityAvailable must match productType constraints
+- User cannot exceed 100 active products (configurable limit)
+
+Error Responses:
+- 400 Bad Request: Invalid input format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Maker not verified or cannot create products
+- 404 Not Found: Category not found
+- 422 Unprocessable Entity: Validation failed (detailed field errors)
+- 429 Too Many Requests: Maximum product limit reached
+
+================================================================================
+MUTATION: updateProduct
+================================================================================
+
+Input: UpdateProductInput!
+- productId: ID! (required)
+- title: String (optional)
+- description: String (optional)
+- categoryId: ID (optional)
+- basePrice: Float (optional)
+- quantityAvailable: Int (optional)
+- status: ProductStatus (optional)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing product owned by authenticated user
+
+2. title (if provided):
+   - Minimum length: 3 characters
+   - Maximum length: 200 characters
+   - Cannot be all whitespace
+
+3. description (if provided):
+   - Minimum length: 20 characters
+   - Maximum length: 5000 characters
+   - Cannot be all whitespace
+
+4. categoryId (if provided):
+   - Must be a valid UUID or ID format
+   - Must reference an existing category
+
+5. basePrice (if provided):
+   - Must be a positive number
+   - Minimum: 0.01
+   - Maximum: 999999.99
+   - Must have at most 2 decimal places
+
+6. quantityAvailable (if provided):
+   - Must be a positive integer
+   - Minimum: 1
+   - Maximum: 10000
+   - Must match productType constraints
+
+7. status (if provided):
+   - Must be one of: DRAFT, ACTIVE, PAUSED, SOLD_OUT, ARCHIVED
+   - Must be a valid state transition
+   - Cannot transition from ARCHIVED to any other status
+
+Business Rules:
+- At least one field must be provided
+- Product must be owned by authenticated user
+- Cannot update product if it has active orders (status restrictions)
+- Status transitions must follow valid state machine
+- Cannot change productType after creation
+
+Error Responses:
+- 400 Bad Request: Invalid input format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot update product
+- 404 Not Found: Product not found
+- 409 Conflict: Invalid status transition or product has active orders
+
+================================================================================
+MUTATION: publishProduct
+================================================================================
+
+Input:
+- productId: ID! (required)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing product
+
+Business Rules:
+- Product must be owned by authenticated user
+- Product must be in DRAFT status
+- Product must have at least one media item
+- Product must have valid category
+- Maker must be verified (optional)
+- Status transitions to ACTIVE
+- Publishes ProductPublished event
+
+Error Responses:
+- 400 Bad Request: Invalid productId format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot publish product
+- 404 Not Found: Product not found
+- 422 Unprocessable Entity: Product not ready for publication (missing media, etc.)
+
+================================================================================
+MUTATION: pauseProduct
+================================================================================
+
+Input:
+- productId: ID! (required)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing product
+
+Business Rules:
+- Product must be owned by authenticated user
+- Product must be in ACTIVE status
+- Status transitions to PAUSED
+- Does not affect existing orders
+
+Error Responses:
+- 400 Bad Request: Invalid productId format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot pause product
+- 404 Not Found: Product not found
+- 409 Conflict: Product not in ACTIVE status
+
+================================================================================
+MUTATION: addProductMedia
+================================================================================
+
+Input: AddProductMediaInput!
+- productId: ID! (required)
+- mediaType: String! (required)
+- url: String! (required)
+- order: Int! (required)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing product owned by authenticated user
+
+2. mediaType:
+   - Must be one of: "image", "video"
+   - Case-sensitive
+
+3. url:
+   - Must be a valid HTTPS URL
+   - Must be from allowed domains (S3, CDN)
+   - Maximum length: 500 characters
+   - Must be accessible
+
+4. order:
+   - Must be a positive integer
+   - Minimum: 1
+   - Maximum: 50 (maximum media items per product)
+   - Must be unique within product (or auto-increment if not specified)
+
+Business Rules:
+- Product must be owned by authenticated user
+- Maximum 50 media items per product
+- Media order determines display sequence
+- First media item is primary image
+
+Error Responses:
+- 400 Bad Request: Invalid input format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot modify product media
+- 404 Not Found: Product not found
+- 422 Unprocessable Entity: Maximum media limit reached
+
+================================================================================
+MUTATION: removeProductMedia
+================================================================================
+
+Input: RemoveProductMediaInput!
+- productId: ID! (required)
+- mediaId: ID! (required)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+
+2. mediaId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing media item
+
+Business Rules:
+- Product must be owned by authenticated user
+- Media item must belong to product
+- Cannot remove last media item if product is published
+
+Error Responses:
+- 400 Bad Request: Invalid input format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot remove product media
+- 404 Not Found: Product or media not found
+- 409 Conflict: Cannot remove last media item
+
+================================================================================
+MUTATION: addProductMaterial
+================================================================================
+
+Input: AddProductMaterialInput!
+- productId: ID! (required)
+- name: String! (required)
+- source: String! (required)
+- locallySourced: Boolean! (required)
+- upcycled: Boolean! (required)
+- sustainable: Boolean! (required)
+- certificationId: String (optional)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing product owned by authenticated user
+
+2. name:
+   - Minimum length: 2 characters
+   - Maximum length: 100 characters
+   - Cannot be all whitespace
+
+3. source:
+   - Minimum length: 2 characters
+   - Maximum length: 200 characters
+   - Cannot be all whitespace
+
+4. locallySourced, upcycled, sustainable:
+   - Must be true or false
+   - Cannot be null
+
+5. certificationId (if provided):
+   - Maximum length: 100 characters
+   - Must be alphanumeric with hyphens/underscores
+
+Business Rules:
+- Product must be owned by authenticated user
+- Maximum 50 materials per product
+
+Error Responses:
+- 400 Bad Request: Invalid input format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot modify product materials
+- 404 Not Found: Product not found
+- 422 Unprocessable Entity: Maximum materials limit reached
+
+================================================================================
+MUTATION: addProcessStep
+================================================================================
+
+Input: AddProcessStepInput!
+- productId: ID! (required)
+- title: String! (required)
+- description: String (optional)
+- durationMinutes: Int (optional)
+- mediaUrl: String (optional)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing product owned by authenticated user
+
+2. title:
+   - Minimum length: 3 characters
+   - Maximum length: 200 characters
+   - Cannot be all whitespace
+
+3. description (if provided):
+   - Maximum length: 1000 characters
+
+4. durationMinutes (if provided):
+   - Must be a positive integer
+   - Minimum: 1
+   - Maximum: 10080 (1 week in minutes)
+
+5. mediaUrl (if provided):
+   - Must be a valid HTTPS URL
+   - Maximum length: 500 characters
+
+Business Rules:
+- Product must be owned by authenticated user
+- Maximum 20 process steps per product
+- Steps are auto-numbered sequentially
+
+Error Responses:
+- 400 Bad Request: Invalid input format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot modify product process steps
+- 404 Not Found: Product not found
+- 422 Unprocessable Entity: Maximum process steps limit reached
+
+================================================================================
+MUTATION: createBatch
+================================================================================
+
+Input: CreateBatchInput!
+- productId: ID! (required)
+- quantity: Int! (required)
+- producedAt: AWSDateTime (optional)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+   - Must reference an existing product
+
+2. quantity:
+   - Must be a positive integer
+   - Minimum: 1
+   - Maximum: 10000
+
+3. producedAt (if provided):
+   - Must be a valid ISO 8601 datetime
+   - Cannot be in the future
+   - Cannot be more than 10 years in the past
+
+Business Rules:
+- Product must be owned by authenticated user
+- Product must be LIMITED_BATCH type
+- Batch quantity cannot exceed product quantityAvailable
+- producedAt defaults to current time if not provided
+
+Error Responses:
+- 400 Bad Request: Invalid input format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot create batch
+- 404 Not Found: Product not found
+- 422 Unprocessable Entity: Invalid product type or quantity exceeds available
+
+================================================================================
+QUERY: getProduct
+================================================================================
+
+Input:
+- productId: ID! (required)
+
+Validation Rules:
+1. productId:
+   - Must be a valid UUID or ID format
+   - Cannot be null or empty
+
+Business Rules:
+- Product must exist
+- Product must be ACTIVE or user must be owner/admin
+- Increment view count (optional)
+
+Error Responses:
+- 400 Bad Request: Invalid productId format
+- 401 Unauthorized: Not authenticated (if required)
+- 404 Not Found: Product not found
+
+================================================================================
+QUERY: listProducts
+================================================================================
+
+Input:
+- makerUserId: ID (optional)
+- categoryId: ID (optional)
+- status: ProductStatus (optional)
+- limit: Int (optional, default: 20, max: 100)
+- nextToken: String (optional)
+
+Validation Rules:
+1. makerUserId (if provided):
+   - Must be a valid UUID or ID format
+
+2. categoryId (if provided):
+   - Must be a valid UUID or ID format
+
+3. status (if provided):
+   - Must be one of: DRAFT, ACTIVE, PAUSED, SOLD_OUT, ARCHIVED
+   - Users can only filter by ACTIVE unless they own the products
+
+4. limit:
+   - Must be between 1 and 100
+   - Default: 20 if not provided
+
+5. nextToken:
+   - Must be a valid pagination token if provided
+
+Business Rules:
+- If makerUserId provided, user must match authenticated user or be admin
+- If status is DRAFT, user must be owner or admin
+- Results filtered by provided criteria
+
+Error Responses:
+- 400 Bad Request: Invalid input format
+- 401 Unauthorized: Not authenticated
+- 403 Forbidden: Cannot access draft products
+
+================================================================================
+COMMON VALIDATION PATTERNS
+================================================================================
+
+1. Price Validation:
+   - All prices must be positive numbers
+   - Maximum 2 decimal places
+   - Range: 0.01 to 999999.99
+
+2. Quantity Validation:
+   - Must be positive integers
+   - Respect product type constraints
+   - Check availability before operations
+
+3. Status Transitions:
+   - DRAFT → ACTIVE (via publish)
+   - ACTIVE → PAUSED (via pause)
+   - ACTIVE → SOLD_OUT (automatic when quantity = 0)
+   - Any → ARCHIVED (manual, permanent)
+
+4. Media Validation:
+   - Validate URL accessibility
+   - Check file types
+   - Enforce size limits
+   - Validate image dimensions (optional)
+
+5. Authentication & Authorization:
+   - All mutations require valid authentication token
+   - Users can only modify their own products
+   - Admins can modify any product
+
+6. Rate Limiting:
+   - Create product: 10 per hour per user
+   - Update product: 50 per hour per user
+   - Add media: 100 per hour per product
+
+================================================================================
+CROSS-DOMAIN VALIDATION
+================================================================================
+
+1. Category Validation:
+   - Validate categoryId exists
+   - Check category is active
+   - Verify category hierarchy
+
+2. Maker Validation:
+   - Validate makerUserId exists
+   - Check maker verification status
+   - Verify maker can create products
+
+================================================================================
+ERROR RESPONSE FORMAT
+================================================================================
+
+All validation errors should return structured error responses:
+
+{
+  "errors": [
+    {
+      "message": "Validation failed",
+      "extensions": {
+        "code": "VALIDATION_ERROR",
+        "field": "title",
+        "reason": "Title must be between 3 and 200 characters"
+      }
+    }
+  ]
+}
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================

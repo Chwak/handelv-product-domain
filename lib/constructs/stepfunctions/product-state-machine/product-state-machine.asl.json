@@ -1,0 +1,264 @@
+{
+  "Comment": "Product Domain State Machine - Handles product publication workflow and status transitions",
+  "StartAt": "RouteProductAction",
+  "States": {
+    "RouteProductAction": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.action",
+          "StringEquals": "publish",
+          "Next": "ValidateProductForPublication"
+        },
+        {
+          "Variable": "$.action",
+          "StringEquals": "pause",
+          "Next": "PauseProduct"
+        },
+        {
+          "Variable": "$.action",
+          "StringEquals": "updateQuantity",
+          "Next": "UpdateProductQuantity"
+        }
+      ],
+      "Default": "InvalidProductAction"
+    },
+    "InvalidProductAction": {
+      "Type": "Fail",
+      "Error": "InvalidProductAction",
+      "Cause": "Action must be publish, pause, or updateQuantity"
+    },
+    "ValidateProductForPublication": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:getItem",
+      "Parameters": {
+        "TableName": "${ProductsTableName}",
+        "Key": {
+          "productId": {
+            "S.$": "$.productId"
+          }
+        }
+      },
+      "ResultPath": "$.productData",
+      "Next": "CheckProductStatus"
+    },
+    "CheckProductStatus": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.productData.Item.status.S",
+          "StringEquals": "DRAFT",
+          "Next": "CheckProductMedia"
+        }
+      ],
+      "Default": "InvalidProductStatusForPublication"
+    },
+    "InvalidProductStatusForPublication": {
+      "Type": "Fail",
+      "Error": "InvalidProductStatus",
+      "Cause": "Product must be in DRAFT status to publish"
+    },
+    "CheckProductMedia": {
+      "Type": "Pass",
+      "Comment": "Media check is handled by Lambda functions before state machine execution",
+      "Next": "UpdateProductToActive"
+    },
+    "UpdateProductToActive": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${ProductsTableName}",
+        "Key": {
+          "productId": {
+            "S.$": "$.productId"
+          }
+        },
+        "UpdateExpression": "SET #status = :status, publishedAt = :publishedAt, updatedAt = :updatedAt",
+        "ExpressionAttributeNames": {
+          "#status": "status"
+        },
+        "ExpressionAttributeValues": {
+          ":status": {
+            "S": "ACTIVE"
+          },
+          ":publishedAt": {
+            "S.$": "$$.State.EnteredTime"
+          },
+          ":updatedAt": {
+            "S.$": "$$.State.EnteredTime"
+          }
+        }
+      },
+      "ResultPath": "$.updateResult",
+      "Next": "PublicationSuccess"
+    },
+    "PublicationSuccess": {
+      "Type": "Succeed"
+    },
+    "PauseProduct": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:getItem",
+      "Parameters": {
+        "TableName": "${ProductsTableName}",
+        "Key": {
+          "productId": {
+            "S.$": "$.productId"
+          }
+        }
+      },
+      "ResultPath": "$.productData",
+      "Next": "ValidateProductCanPause"
+    },
+    "ValidateProductCanPause": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.productData.Item.status.S",
+          "StringEquals": "ACTIVE",
+          "Next": "UpdateProductToPaused"
+        }
+      ],
+      "Default": "InvalidStatusForPause"
+    },
+    "InvalidStatusForPause": {
+      "Type": "Fail",
+      "Error": "InvalidStatusForPause",
+      "Cause": "Only ACTIVE products can be paused"
+    },
+    "UpdateProductToPaused": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${ProductsTableName}",
+        "Key": {
+          "productId": {
+            "S.$": "$.productId"
+          }
+        },
+        "UpdateExpression": "SET #status = :status, pausedAt = :pausedAt, updatedAt = :updatedAt",
+        "ExpressionAttributeNames": {
+          "#status": "status"
+        },
+        "ExpressionAttributeValues": {
+          ":status": {
+            "S": "PAUSED"
+          },
+          ":pausedAt": {
+            "S.$": "$$.State.EnteredTime"
+          },
+          ":updatedAt": {
+            "S.$": "$$.State.EnteredTime"
+          }
+        }
+      },
+      "ResultPath": "$.updateResult",
+      "Next": "PauseSuccess"
+    },
+    "PauseSuccess": {
+      "Type": "Succeed"
+    },
+    "UpdateProductQuantity": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:getItem",
+      "Parameters": {
+        "TableName": "${ProductsTableName}",
+        "Key": {
+          "productId": {
+            "S.$": "$.productId"
+          }
+        }
+      },
+      "ResultPath": "$.productData",
+      "Next": "ValidateQuantityUpdate"
+    },
+    "ValidateQuantityUpdate": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "And": [
+            {
+              "Variable": "$.newQuantity",
+              "NumericGreaterThan": 0
+            },
+            {
+              "Variable": "$.productData.Item.productType.S",
+              "StringEquals": "LIMITED_BATCH"
+            }
+          ],
+          "Next": "UpdateQuantity"
+        },
+        {
+          "Variable": "$.newQuantity",
+          "NumericEquals": 0,
+          "Next": "UpdateToSoldOut"
+        }
+      ],
+      "Default": "InvalidQuantityUpdate"
+    },
+    "InvalidQuantityUpdate": {
+      "Type": "Fail",
+      "Error": "InvalidQuantityUpdate",
+      "Cause": "Quantity must be positive or zero (for sold out)"
+    },
+    "UpdateQuantity": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${ProductsTableName}",
+        "Key": {
+          "productId": {
+            "S.$": "$.productId"
+          }
+        },
+        "UpdateExpression": "SET quantityAvailable = :quantity, updatedAt = :updatedAt",
+        "ExpressionAttributeValues": {
+          ":quantity": {
+            "N.$": "$.newQuantity"
+          },
+          ":updatedAt": {
+            "S.$": "$$.State.EnteredTime"
+          }
+        }
+      },
+      "Next": "QuantityUpdateSuccess"
+    },
+    "UpdateToSoldOut": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::dynamodb:updateItem",
+      "Parameters": {
+        "TableName": "${ProductsTableName}",
+        "Key": {
+          "productId": {
+            "S.$": "$.productId"
+          }
+        },
+        "UpdateExpression": "SET #status = :status, quantityAvailable = :quantity, soldOutAt = :soldOutAt, updatedAt = :updatedAt",
+        "ExpressionAttributeNames": {
+          "#status": "status"
+        },
+        "ExpressionAttributeValues": {
+          ":status": {
+            "S": "SOLD_OUT"
+          },
+          ":quantity": {
+            "N": "0"
+          },
+          ":soldOutAt": {
+            "S.$": "$$.State.EnteredTime"
+          },
+          ":updatedAt": {
+            "S.$": "$$.State.EnteredTime"
+          }
+        }
+      },
+      "ResultPath": "$.updateResult",
+      "Next": "SoldOutSuccess"
+    },
+    "SoldOutSuccess": {
+      "Type": "Succeed"
+    },
+    "QuantityUpdateSuccess": {
+      "Type": "Succeed"
+    }
+  }
+}

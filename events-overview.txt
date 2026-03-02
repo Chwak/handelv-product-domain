@@ -1,0 +1,21 @@
+Product Domain - Events Overview
+Last Updated: 2026-02-15
+
+Produced Events (EventBridge)
+- ShelfItemPublished
+- ShelfItemUpdated
+- ShelfItemSoldOut
+- ShelfItemPaused
+- ShelfMediaAdded
+- LowStockAlert
+- MaterialPurchased
+- MaterialStockUpdated
+- ProductMovedToBasement
+- ProductMovedToShelf
+
+Consumed Events (EventBridge)
+- MakerVerified (from Maker Domain)
+- OrderCreated (from Order Domain)
+- OrderCanceled (from Order Domain)
+- OrderCompleted (from Order Domain)
+- MaterialPurchasePaid (from Payment Domain)

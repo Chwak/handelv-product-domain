@@ -1,0 +1,498 @@
+type Query @aws_cognito_user_pools {
+  getProduct(productId: ID!): Product
+  listProducts(
+    makerUserId: ID
+    categoryId: ID
+    status: ProductStatus
+    limit: Int
+    nextToken: String
+  ): ProductsConnection
+  getProductMedia(productId: ID!, limit: Int, nextToken: String): ProductMediaConnection
+  getProductMaterials(productId: ID!, limit: Int, nextToken: String): ProductMaterialsConnection
+  getProductProcessSteps(productId: ID!, limit: Int, nextToken: String): ProcessStepsConnection
+  getProductBatches(productId: ID!, limit: Int, nextToken: String): BatchesConnection
+  getProductCertificates(productId: ID!, limit: Int, nextToken: String): CertificatesConnection
+  getCategories(limit: Int, nextToken: String): CategoriesConnection
+  getCategory(categoryId: ID!): Category
+  getMaterialInventory(makerUserId: ID!, materialId: ID!): MaterialInventory
+  listMaterialInventory(makerUserId: ID!, limit: Int, nextToken: String): MaterialInventoryConnection
+  getLowStockMaterials(makerUserId: ID!): [MaterialInventory!]!
+  getStockMovements(makerUserId: ID!, materialId: ID, limit: Int, nextToken: String): StockMovementsConnection
+  getSupplier(makerUserId: ID!, supplierId: ID!): Supplier
+  listSuppliers(makerUserId: ID!, limit: Int, nextToken: String): SuppliersConnection
+}
+
+type Mutation @aws_cognito_user_pools {
+  createProduct(input: CreateProductInput!): Product
+  updateProduct(input: UpdateProductInput!): Product
+  moveProductToDraft(productId: ID!): Product
+  moveProductToShelf(productId: ID!): Product
+  moveProductToBasement(productId: ID!): Product
+  addProductMedia(input: AddProductMediaInput!): ProductMedia
+  removeProductMedia(input: RemoveProductMediaInput!): Boolean
+  addProductMaterial(input: AddProductMaterialInput!): ProductMaterial
+  removeProductMaterial(input: RemoveProductMaterialInput!): Boolean
+  addProcessStep(input: AddProcessStepInput!): ProcessStep
+  removeProcessStep(input: RemoveProcessStepInput!): Boolean
+  createBatch(input: CreateBatchInput!): Batch
+  generateCertificate(input: GenerateCertificateInput!): Certificate
+  addMaterialToInventory(input: AddMaterialInput!): MaterialInventory
+  updateMaterialStock(input: UpdateMaterialStockInput!): MaterialInventory
+  recordStockMovement(input: RecordStockMovementInput!): StockMovement
+  addSupplier(input: AddSupplierInput!): Supplier
+  updateSupplier(input: UpdateSupplierInput!): Supplier
+  removeSupplier(makerUserId: ID!, supplierId: ID!): Boolean
+  createWaitlistEntry(input: CreateWaitlistEntryInput!): WaitlistEntry @aws_api_key
+}
+
+type Subscription @aws_cognito_user_pools {
+  onProductMoved(makerUserId: ID!): Product
+    @aws_subscribe(mutations: ["moveProductToShelf", "moveProductToBasement", "moveProductToDraft"])
+  onProductUpdated(productId: ID!): Product
+    @aws_subscribe(mutations: ["updateProduct"])
+  onLowStock(makerUserId: ID!): MaterialInventory
+    @aws_subscribe(mutations: ["updateMaterialStock"])
+  onStockMovement(makerUserId: ID!): StockMovement
+    @aws_subscribe(mutations: ["recordStockMovement"])
+}
+
+enum ProductStatus {
+  CREATION
+  DRAFT
+  READY_FOR_SHELF
+  BASEMENT
+  SHIPPING
+}
+
+enum ProductType {
+  ONE_OF_ONE
+  LIMITED_BATCH
+  MADE_TO_ORDER
+}
+
+enum WaitlistInterest {
+  COLLECTOR
+  MAKER
+  BOTH
+}
+
+type Product {
+  productId: ID!
+  makerUserId: ID!
+  title: String!
+  description: String!
+  categoryId: ID!
+  category: Category
+  productType: ProductType!
+  basePrice: Float!
+  quantityAvailable: Int
+  status: ProductStatus!
+  media: [ProductMedia!]
+  materials: [ProductMaterial!]
+  processSteps: [ProcessStep!]
+  batches: [Batch!]
+  certificates: [Certificate!]
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type WaitlistEntry {
+  email: String!
+  interest: WaitlistInterest!
+  source: String!
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type ProductsConnection {
+  items: [Product!]!
+  nextToken: String
+}
+
+type ProductMedia {
+  productId: ID!
+  mediaId: ID!
+  mediaType: String!
+  url: String!
+  order: Int!
+  createdAt: AWSDateTime!
+}
+
+type ProductMediaConnection {
+  items: [ProductMedia!]!
+  nextToken: String
+}
+
+type ProductMaterial {
+  productId: ID!
+  materialId: ID!
+  name: String!
+  source: String!
+  locallySourced: Boolean!
+  upcycled: Boolean!
+  sustainable: Boolean!
+  certificationId: String
+  createdAt: AWSDateTime!
+}
+
+type ProductMaterialsConnection {
+  items: [ProductMaterial!]!
+  nextToken: String
+}
+
+type ProcessStep {
+  productId: ID!
+  stepId: ID!
+  stepNumber: Int!
+  title: String!
+  description: String
+  durationMinutes: Int
+  mediaUrl: String
+  createdAt: AWSDateTime!
+}
+
+type ProcessStepsConnection {
+  items: [ProcessStep!]!
+  nextToken: String
+}
+
+type Batch {
+  productId: ID!
+  batchId: ID!
+  quantity: Int!
+  remainingQuantity: Int!
+  createdAt: AWSDateTime!
+  producedAt: AWSDateTime
+}
+
+type BatchesConnection {
+  items: [Batch!]!
+  nextToken: String
+}
+
+type Certificate {
+  productId: ID!
+  certificateId: ID!
+  orderId: ID!
+  qrCode: String!
+  materialMetadata: AWSJSON!
+  creationMetadata: AWSJSON!
+  createdAt: AWSDateTime!
+}
+
+type CertificatesConnection {
+  items: [Certificate!]!
+  nextToken: String
+}
+
+enum MaterialType {
+  WOOD
+  METAL
+  LEATHER
+  FABRIC
+  CERAMIC
+  GLASS
+  STONE
+  PAPER
+  PLASTIC
+  RESIN
+  PAINT
+  FINISH
+  ADHESIVE
+  HARDWARE
+  PACKAGING
+  OTHER
+}
+
+enum StockStatus {
+  IN_STOCK
+  LOW_STOCK
+  OUT_OF_STOCK
+  REORDER_PENDING
+}
+
+enum MovementType {
+  PURCHASE
+  USAGE
+  WASTE
+  RETURN_TO_SUPPLIER
+  ADJUSTMENT
+  TRANSFER
+  DAMAGED
+}
+
+enum MeasurementUnit {
+  KILOGRAMS
+  GRAMS
+  POUNDS
+  OUNCES
+  LITERS
+  MILLILITERS
+  METERS
+  CENTIMETERS
+  INCHES
+  FEET
+  SQUARE_METERS
+  SQUARE_FEET
+  PIECES
+  SHEETS
+  ROLLS
+}
+
+type MaterialInventory {
+  makerUserId: ID!
+  materialId: ID!
+  materialName: String!
+  materialType: MaterialType!
+  currentStock: Float!
+  unit: MeasurementUnit!
+  reorderThreshold: Float!
+  reorderQuantity: Float!
+  stockStatus: StockStatus!
+  costPerUnit: Float!
+  supplierId: ID
+  supplier: Supplier
+  lastRestockDate: AWSDateTime
+  location: String
+  notes: String
+  sustainable: Boolean
+  certified: Boolean
+  certificationId: String
+  originCountry: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type MaterialInventoryConnection {
+  items: [MaterialInventory!]!
+  nextToken: String
+}
+
+type StockMovement {
+  makerUserId: ID!
+  materialId: ID!
+  movementId: ID!
+  movementType: MovementType!
+  quantity: Float!
+  unit: MeasurementUnit!
+  costPerUnit: Float
+  totalCost: Float
+  supplierId: ID
+  orderId: ID
+  productId: ID
+  notes: String
+  movementTimestamp: AWSDateTime!
+}
+
+type StockMovementsConnection {
+  items: [StockMovement!]!
+  nextToken: String
+}
+
+type Supplier {
+  makerUserId: ID!
+  supplierId: ID!
+  companyName: String!
+  contactName: String
+  email: String
+  phone: String
+  website: String
+  address: String
+  city: String
+  state: String
+  country: String!
+  postalCode: String
+  materialsSupplied: [MaterialType!]!
+  leadTimeDays: Int!
+  minimumOrderValue: Float
+  paymentTerms: String
+  reliabilityScore: Float
+  sustainabilityCertified: Boolean
+  notes: String
+  lastOrderDate: AWSDateTime
+  totalOrderCount: Int
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type SuppliersConnection {
+  items: [Supplier!]!
+  nextToken: String
+}
+
+input AddMaterialInput {
+  makerUserId: ID!
+  materialName: String!
+  materialType: MaterialType!
+  currentStock: Float!
+  unit: MeasurementUnit!
+  reorderThreshold: Float!
+  reorderQuantity: Float!
+  costPerUnit: Float!
+  supplierId: ID
+  location: String
+  notes: String
+  sustainable: Boolean
+  certified: Boolean
+  certificationId: String
+  originCountry: String
+}
+
+input CreateWaitlistEntryInput {
+  email: String!
+  interest: WaitlistInterest!
+  source: String
+}
+
+input UpdateMaterialStockInput {
+  makerUserId: ID!
+  materialId: ID!
+  currentStock: Float
+  reorderThreshold: Float
+  reorderQuantity: Float
+  costPerUnit: Float
+  location: String
+  notes: String
+}
+
+input RecordStockMovementInput {
+  makerUserId: ID!
+  materialId: ID!
+  movementType: MovementType!
+  quantity: Float!
+  unit: MeasurementUnit!
+  costPerUnit: Float
+  totalCost: Float
+  supplierId: ID
+  orderId: ID
+  productId: ID
+  notes: String
+}
+
+input AddSupplierInput {
+  makerUserId: ID!
+  companyName: String!
+  contactName: String
+  email: String
+  phone: String
+  website: String
+  address: String
+  city: String
+  state: String
+  country: String!
+  postalCode: String
+  materialsSupplied: [MaterialType!]!
+  leadTimeDays: Int!
+  minimumOrderValue: Float
+  paymentTerms: String
+  sustainabilityCertified: Boolean
+  notes: String
+}
+
+input UpdateSupplierInput {
+  makerUserId: ID!
+  supplierId: ID!
+  companyName: String
+  contactName: String
+  email: String
+  phone: String
+  website: String
+  address: String
+  city: String
+  state: String
+  country: String
+  postalCode: String
+  materialsSupplied: [MaterialType!]
+  leadTimeDays: Int
+  minimumOrderValue: Float
+  paymentTerms: String
+  reliabilityScore: Float
+  sustainabilityCertified: Boolean
+  notes: String
+}
+
+type Category {
+  categoryId: ID!
+  name: String!
+  description: String
+  parentCategoryId: ID
+  createdAt: AWSDateTime!
+}
+
+type CategoriesConnection {
+  items: [Category!]!
+  nextToken: String
+}
+
+input CreateProductInput {
+  makerUserId: ID!
+  title: String!
+  description: String!
+  categoryId: ID!
+  productType: ProductType!
+  basePrice: Float!
+  quantityAvailable: Int
+}
+
+input UpdateProductInput {
+  productId: ID!
+  title: String
+  description: String
+  categoryId: ID
+  basePrice: Float
+  quantityAvailable: Int
+  status: ProductStatus
+}
+
+input AddProductMediaInput {
+  productId: ID!
+  mediaType: String!
+  url: String!
+  order: Int!
+}
+
+input RemoveProductMediaInput {
+  productId: ID!
+  mediaId: ID!
+}
+
+input AddProductMaterialInput {
+  productId: ID!
+  name: String!
+  source: String!
+  locallySourced: Boolean!
+  upcycled: Boolean!
+  sustainable: Boolean!
+  certificationId: String
+}
+
+input RemoveProductMaterialInput {
+  productId: ID!
+  materialId: ID!
+}
+
+input AddProcessStepInput {
+  productId: ID!
+  title: String!
+  description: String
+  durationMinutes: Int
+  mediaUrl: String
+}
+
+input RemoveProcessStepInput {
+  productId: ID!
+  stepId: ID!
+}
+
+input CreateBatchInput {
+  productId: ID!
+  quantity: Int!
+  producedAt: AWSDateTime
+}
+
+input GenerateCertificateInput {
+  productId: ID!
+  orderId: ID!
+  materialMetadata: AWSJSON!
+  creationMetadata: AWSJSON!
+}

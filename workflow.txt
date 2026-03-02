@@ -1,0 +1,376 @@
+================================================================================
+PRODUCT DOMAIN - WORKFLOW DOCUMENTATION
+================================================================================
+
+1. WORKFLOW
+================================================================================
+
+The Product Domain manages both:
+- **Shelf feature**: Handmade products/services offered by makers (products for sale)
+- **Inventory feature**: Raw materials, suppliers, stock movements, basement storage
+
+The domain uses a single unified Product AppSync GraphQL API.
+
+Main Workflows (Shelf Feature):
+
+1. Product Creation
+   - Create product (draft state)
+   - Product includes title, description, price, materials, process steps
+   - Product associated with maker
+
+2. Product Publishing
+   - Publish product (make it visible to collectors)
+   - Validates maker is verified
+   - Updates product status to published
+   - Triggers search index update
+
+3. Product Updates
+   - Update product details
+   - Update pricing, description, materials
+   - Product remains published during updates
+
+4. Product Management
+   - Pause product (temporarily hide)
+   - Get product details
+   - List products by maker
+   - List products by category
+
+5. Product Media Management
+   - Add images/videos to product
+   - Media stored in S3
+   - Media metadata in DynamoDB
+
+6. Product Materials Management
+   - Add materials used in product
+   - Materials list for transparency
+
+7. Process Steps Management
+   - Add process steps (how item is made)
+   - Process steps for transparency and education
+
+8. Batch Management
+   - Create batch for product (limited edition)
+   - Track batch availability
+
+9. Certificate Generation
+   - Generate authenticity certificate for product
+   - Certificate includes maker info, materials, process
+
+Main Workflows (Inventory Feature):
+
+1. Material Inventory Management
+   - Add materials to inventory
+   - Update stock levels
+   - Monitor reorder thresholds
+   - Track material costs
+
+2. Stock Movement Tracking
+   - Record purchases from suppliers
+   - Record material usage in production
+   - Record waste
+   - Maintain audit trail
+
+3. Supplier Management
+   - Add/update supplier information
+   - Track supplier reliability
+   - Manage supplier certifications
+
+4. Basement Management
+   - Move products from shelf to basement (archive)
+   - Store unpublished product metadata
+   - Re-publish products from basement to shelf
+
+5. Product Quantity Tracking
+   - Track quantities for products on shelf
+   - Sync with shelf feature
+   - Update on sales/restocks
+
+================================================================================
+2. OPERATIONS TYPE
+================================================================================
+
+Operation Types:
+- Shelf CRUD Operations: Create, update, get, list shelf items
+- Publishing Operations: Publish shelf item, pause shelf item
+- Media Operations: Add shelf media
+- Material Operations: Add shelf materials
+- Process Operations: Add process steps
+- Batch Operations: Create batch
+- Certificate Operations: Generate certificate
+- Inventory CRUD Operations: Add, update, list materials
+- Stock Operations: Record movements, track levels
+- Supplier Operations: Add, update, list suppliers
+- Basement Operations: Move to/from basement, list basement items
+
+API Type: Single unified Product AppSync GraphQL API
+
+================================================================================
+3. OUTPUT OF EACH OPERATION (NO CODE, JUST DESCRIPTION)
+================================================================================
+
+3.1 Create Product Operation
+   Input: Maker user ID, title, description, price, category, materials, process_steps
+   Process:
+     - Validates maker exists and is verified (checks maker_profiles table)
+     - Creates product record in products table
+     - Sets status to DRAFT
+     - Sets created_at timestamp
+   Output:
+     - Success: Product object with product_id, maker_user_id, title, description, price, status (DRAFT), created_at
+     - Error: Maker not found, maker not verified, validation errors
+
+3.2 Publish Product Operation
+   Input: Product ID, maker user ID
+   Process:
+     - Validates product belongs to maker
+     - Validates maker is verified
+     - Updates product status to PUBLISHED
+     - Sets published_at timestamp
+     - Triggers state machine for publishing workflow
+   Output:
+     - Success: Updated product object with status (PUBLISHED), published_at
+     - Error: Product not found, maker not verified, unauthorized access
+
+3.3 Update Product Operation
+   Input: Product ID, maker user ID, updated fields (title, description, price, etc.)
+   Process:
+     - Validates product belongs to maker
+     - Updates product record
+     - Updates updated_at timestamp
+     - If published, triggers search index update
+   Output:
+     - Success: Updated product object
+     - Error: Product not found, unauthorized access, validation errors
+
+3.4 Pause Product Operation
+   Input: Product ID, maker user ID
+   Process:
+     - Validates product belongs to maker
+     - Updates product status to PAUSED
+     - Triggers search index update to hide from search
+   Output:
+     - Success: Updated product object with status (PAUSED)
+     - Error: Product not found, unauthorized access
+
+3.5 Get Product Operation
+   Input: Product ID
+   Process:
+     - Retrieves product from products table
+     - Retrieves associated media from product_media table
+     - Returns complete product with all details
+   Output:
+     - Success: Product object with all fields including media, materials, process_steps, maker info
+     - Error: Product not found (404)
+
+3.6 List Products Operation
+   Input: Maker user ID (optional), category (optional), status (optional), pagination parameters
+   Process:
+     - Queries products table with filters
+     - Returns paginated list of products
+   Output:
+     - Success: List of products with product_id, title, price, status, maker_name, images, pagination info
+     - Error: Invalid filters, invalid pagination parameters
+
+3.7 Add Product Media Operation
+   Input: Product ID, maker user ID, media file (image/video), media type
+   Process:
+     - Validates product belongs to maker
+     - Uploads media file to S3 bucket
+     - Creates record in product_media table
+     - Updates product with media reference
+   Output:
+     - Success: Media object with media_id, product_id, media_url, media_type, uploaded_at
+     - Error: Product not found, unauthorized access, invalid file type, upload failure
+
+3.8 Add Product Material Operation
+   Input: Product ID, maker user ID, material name, material description
+   Process:
+     - Validates product belongs to maker
+     - Adds material to product materials list
+     - Updates product record
+   Output:
+     - Success: Updated product with new material added
+     - Error: Product not found, unauthorized access
+
+3.9 Add Process Step Operation
+   Input: Product ID, maker user ID, step_number, step_description, step_image (optional)
+   Process:
+     - Validates product belongs to maker
+     - Adds process step to product process_steps list
+     - Updates product record
+   Output:
+     - Success: Updated product with new process step added
+     - Error: Product not found, unauthorized access
+
+3.10 Create Batch Operation
+   Input: Product ID, maker user ID, batch_size, batch_name
+   Process:
+     - Validates product belongs to maker
+     - Creates batch record
+     - Associates batch with product
+     - Sets batch availability
+   Output:
+     - Success: Batch object with batch_id, product_id, batch_size, available_count, created_at
+     - Error: Product not found, unauthorized access
+
+3.11 Generate Certificate Operation
+   Input: Product ID, maker user ID
+   Process:
+     - Validates product belongs to maker
+     - Generates authenticity certificate
+     - Certificate includes maker info, materials, process, product details
+     - Stores certificate reference
+   Output:
+     - Success: Certificate object with certificate_id, product_id, certificate_url, generated_at
+     - Error: Product not found, unauthorized access, generation failure
+
+3.12 Add Material to Inventory Operation (Inventory Feature)
+   Input: Maker user ID, material name, material type, stock quantity, unit of measure, unit cost
+   Process:
+     - Validates maker exists
+     - Creates material record in material_inventory table
+     - Sets current_stock to initial quantity
+   Output:
+     - Success: Material object with material_id, maker_user_id, material_name, current_stock, created_at
+     - Error: Maker not found, validation errors
+
+3.13 Update Material Stock Operation (Inventory Feature)
+   Input: Material ID, maker user ID, quantity change, movement type (purchase/usage/waste)
+   Process:
+     - Validates material belongs to maker
+     - Updates current_stock in material_inventory table
+     - Records movement in stock_movements table
+     - Checks if stock falls below reorder threshold, triggers LowStockAlert if needed
+   Output:
+     - Success: Updated material object with new current_stock, movement_id
+     - Error: Material not found, unauthorized access, insufficient stock
+
+3.14 Move Product to Basement Operation (Inventory Feature)
+   Input: Shelf item ID, maker user ID, removal reason
+   Process:
+     - Validates shelf item belongs to maker
+     - Creates basement_products record with product snapshot
+     - Removes from active shelf (or marks as unpublished)
+     - Publishes ProductMovedToBasement event
+   Output:
+     - Success: Basement item object with basement_item_id, original_shelf_item_id, moved_at
+     - Error: Shelf item not found, unauthorized access
+
+3.15 Move Product from Basement to Shelf Operation (Inventory Feature)
+   Input: Basement item ID, maker user ID
+   Process:
+     - Validates basement item belongs to maker
+     - Restores product to shelf (creates or updates shelf item)
+     - Removes from basement_products table
+     - Publishes ProductMovedToShelf event
+   Output:
+     - Success: Shelf item object with shelf_item_id, published_at
+     - Error: Basement item not found, unauthorized access
+
+================================================================================
+4. GENERATED EVENTS - WHO, HOW TO BE COMMUNICATED WITH WHICH OTHER DOMAIN
+================================================================================
+
+Events Published:
+- ProductCreated: Published when product is created
+  - Who: Product Domain (Shelf feature)
+  - How: EventBridge event bus
+  - Communicated with: Discovery Domain (optional, for draft indexing)
+  - Purpose: Track product creation
+  - Event Data: product_id, maker_user_id, title, category, created_at
+
+- ProductPublished: Published when product is published
+  - Who: Product Domain (Shelf feature)
+  - How: EventBridge event bus
+  - Communicated with: Discovery Domain, Notification Domain, Collector Domain
+  - Purpose: Add product to search index, notify followers, enable saving
+  - Event Data: product_id, maker_user_id, title, description, price, category, published_at
+
+- ProductUpdated: Published when product is updated
+  - Who: Product Domain (Shelf feature)
+  - How: EventBridge event bus
+  - Communicated with: Discovery Domain, Order Domain
+  - Purpose: Update search index, validate product in orders
+  - Event Data: product_id, updated_fields, updated_at
+
+- ProductPaused: Published when product is paused
+  - Who: Product Domain (Shelf feature)
+  - How: EventBridge event bus
+  - Communicated with: Discovery Domain, Order Domain
+  - Purpose: Remove from search index, prevent new orders
+  - Event Data: product_id, paused_at
+
+- ProductMediaAdded: Published when media is added to product
+  - Who: Product Domain (Shelf feature)
+  - How: EventBridge event bus
+  - Communicated with: Discovery Domain
+  - Purpose: Update search index with new media
+  - Event Data: product_id, media_id, media_type, added_at
+
+- LowStockAlert: Published when material stock is low
+  - Who: Product Domain (Inventory feature)
+  - How: EventBridge event bus
+  - Communicated with: Notification Domain
+  - Purpose: Alert maker about low material stock
+  - Event Data: maker_user_id, material_id, material_name, current_stock, reorder_threshold, alerted_at
+
+- MaterialStockUpdated: Published when material stock changes
+  - Who: Product Domain (Inventory feature)
+  - How: EventBridge event bus
+  - Communicated with: Analytics Domain, Discovery Domain
+  - Purpose: Track inventory changes, update material availability
+  - Event Data: maker_user_id, material_id, previous_stock, new_stock, updated_at
+
+- ProductMovedToBasement: Published when product is archived
+  - Who: Product Domain (Inventory feature)
+  - How: EventBridge event bus
+  - Communicated with: Analytics Domain, Notification Domain
+  - Purpose: Track product removals from shelf
+  - Event Data: basement_item_id, maker_user_id, original_shelf_item_id, removal_reason, moved_at
+
+- ProductMovedToShelf: Published when product is re-published
+  - Who: Product Domain (Inventory feature)
+  - How: EventBridge event bus
+  - Communicated with: Discovery Domain, Analytics Domain, Notification Domain
+  - Purpose: Add product back to search index, notify followers
+  - Event Data: shelf_item_id, maker_user_id, previous_basement_item_id, moved_at
+
+Events Consumed:
+- MakerVerified: From Maker Domain / Verification Trust Domain
+  - Purpose: Validate maker is verified before publishing product
+  - Action: Check verification status when publishing product
+
+- OrderCreated: From Order Domain
+  - Purpose: Update shelf item availability
+  - Action: Decrement quantity_available
+
+- OrderCanceled: From Order Domain
+  - Purpose: Restore shelf item availability
+  - Action: Increment quantity_available
+
+- OrderCompleted: From Order Domain
+  - Purpose: Track material usage
+  - Action: Suggest recording material usage for order
+
+- MaterialPurchasePaid: From Payment Domain
+  - Purpose: Record material purchases
+  - Action: Add material to inventory, record stock movement
+
+Cross-Domain Communication:
+- Discovery Domain: Receives ShelfItem* and MaterialStockUpdated events to maintain search index
+- Notification Domain: Receives ShelfItemPublished, LowStockAlert, ProductMovedToBasement, ProductMovedToShelf events
+- Collector Domain: Receives ShelfItemPublished events to enable saving products
+- Order Domain: Consumes ShelfItemPublished, ShelfItemUpdated, ShelfItemPaused events to validate products in orders
+- Analytics Domain: Receives MaterialStockUpdated, ProductMovedToBasement, ProductMovedToShelf events
+- Maker Domain: Validates maker exists and is verified (via SSM parameter import of maker_profiles table)
+
+Communication Method:
+- EventBridge: Primary method for asynchronous event communication
+- AppSync GraphQL: Single unified API for direct queries/mutations from frontend
+- S3: Storage for shelf media files
+- SSM Parameters: Imports maker_profiles table name from maker-domain for validation
+- DynamoDB: Direct read access to maker_profiles table (imported via SSM)
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================

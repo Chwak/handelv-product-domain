@@ -1,0 +1,6854 @@
+{
+ "Resources": {
+  "InventoryTablesMaterialInventoryTable4A548EF3": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "makerUserId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "materialId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "materialType",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "currentStock",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "stockStatus",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "lastRestockDate",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-MaterialType",
+      "KeySchema": [
+       {
+        "AttributeName": "materialType",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "currentStock",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2-StockStatus",
+      "KeySchema": [
+       {
+        "AttributeName": "stockStatus",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "lastRestockDate",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "makerUserId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "materialId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-material-inventory-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/InventoryTables/MaterialInventoryTable/Resource"
+   }
+  },
+  "InventoryTablesStockMovementsTable1E2C0AB4": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "makerUserId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "movementTimestamp#materialId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "materialId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "movementTimestamp",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "movementType",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-MaterialId",
+      "KeySchema": [
+       {
+        "AttributeName": "materialId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "movementTimestamp",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2-MovementType",
+      "KeySchema": [
+       {
+        "AttributeName": "movementType",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "movementTimestamp",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "makerUserId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "movementTimestamp#materialId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-stock-movements-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "TimeToLiveSpecification": {
+     "AttributeName": "ttl",
+     "Enabled": true
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/InventoryTables/StockMovementsTable/Resource"
+   }
+  },
+  "InventoryTablesSuppliersTable24826FDE": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "makerUserId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "supplierId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "country",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "city",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "reliabilityScore",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-SupplierLocation",
+      "KeySchema": [
+       {
+        "AttributeName": "country",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "city",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2-ReliabilityScore",
+      "KeySchema": [
+       {
+        "AttributeName": "makerUserId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "reliabilityScore",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "makerUserId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "supplierId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-suppliers-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/InventoryTables/SuppliersTable/Resource"
+   }
+  },
+  "InventoryTablesBasementProductsTable174B9403": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "makerUserId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "shelfItemId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "archivedAt",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "status",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-ArchivedDate",
+      "KeySchema": [
+       {
+        "AttributeName": "makerUserId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "archivedAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2-Status",
+      "KeySchema": [
+       {
+        "AttributeName": "makerUserId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "status",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "makerUserId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "shelfItemId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-basement-products-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/InventoryTables/BasementProductsTable/Resource"
+   }
+  },
+  "InventoryTablesProductQuantitiesTable7B576FF5": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "shelfItemId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "stockStatus",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "currentQuantity",
+      "AttributeType": "N"
+     },
+     {
+      "AttributeName": "makerUserId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "lastUpdated",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-StockStatus",
+      "KeySchema": [
+       {
+        "AttributeName": "stockStatus",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "currentQuantity",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2-MakerUserId",
+      "KeySchema": [
+       {
+        "AttributeName": "makerUserId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "lastUpdated",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "shelfItemId",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-product-quantities-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/InventoryTables/ProductQuantitiesTable/Resource"
+   }
+  },
+  "MaterialInventoryTableNameParameterA5F4EB64": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Material Inventory DynamoDB Table Name",
+    "Name": "/dev/product-domain/dynamodb/material-inventory-table-name",
+    "Tags": {
+     "Domain": "product-domain",
+     "Environment": "dev",
+     "Project": "hand-made",
+     "Region": "use1",
+     "StackName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Type": "String",
+    "Value": {
+     "Ref": "InventoryTablesMaterialInventoryTable4A548EF3"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/MaterialInventoryTableNameParameter/Resource"
+   }
+  },
+  "StockMovementsTableNameParameterE6383638": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Stock Movements DynamoDB Table Name",
+    "Name": "/dev/product-domain/dynamodb/stock-movements-table-name",
+    "Tags": {
+     "Domain": "product-domain",
+     "Environment": "dev",
+     "Project": "hand-made",
+     "Region": "use1",
+     "StackName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Type": "String",
+    "Value": {
+     "Ref": "InventoryTablesStockMovementsTable1E2C0AB4"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/StockMovementsTableNameParameter/Resource"
+   }
+  },
+  "SuppliersTableNameParameter41EA4475": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Suppliers DynamoDB Table Name",
+    "Name": "/dev/product-domain/dynamodb/suppliers-table-name",
+    "Tags": {
+     "Domain": "product-domain",
+     "Environment": "dev",
+     "Project": "hand-made",
+     "Region": "use1",
+     "StackName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Type": "String",
+    "Value": {
+     "Ref": "InventoryTablesSuppliersTable24826FDE"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/SuppliersTableNameParameter/Resource"
+   }
+  },
+  "BasementProductsTableNameParameter74791D68": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Basement Products DynamoDB Table Name",
+    "Name": "/dev/product-domain/dynamodb/basement-products-table-name",
+    "Tags": {
+     "Domain": "product-domain",
+     "Environment": "dev",
+     "Project": "hand-made",
+     "Region": "use1",
+     "StackName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Type": "String",
+    "Value": {
+     "Ref": "InventoryTablesBasementProductsTable174B9403"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/BasementProductsTableNameParameter/Resource"
+   }
+  },
+  "ProductQuantitiesTableNameParameter67FDF906": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Product Quantities DynamoDB Table Name",
+    "Name": "/dev/product-domain/dynamodb/product-quantities-table-name",
+    "Tags": {
+     "Domain": "product-domain",
+     "Environment": "dev",
+     "Project": "hand-made",
+     "Region": "use1",
+     "StackName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Type": "String",
+    "Value": {
+     "Ref": "InventoryTablesProductQuantitiesTable7B576FF5"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductQuantitiesTableNameParameter/Resource"
+   }
+  },
+  "ProductAppSyncApiLogsRole495C8ACB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Product AppSync API CloudWatch Logs",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/appsync/apis/*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-appsync-logs-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ApiLogsRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiF0916D8C": {
+   "Type": "AWS::AppSync::GraphQLApi",
+   "Properties": {
+    "AdditionalAuthenticationProviders": [
+     {
+      "AuthenticationType": "AWS_IAM"
+     }
+    ],
+    "AuthenticationType": "AMAZON_COGNITO_USER_POOLS",
+    "LogConfig": {
+     "CloudWatchLogsRoleArn": {
+      "Fn::GetAtt": [
+       "ProductAppSyncApiLogsRole495C8ACB",
+       "Arn"
+      ]
+     },
+     "ExcludeVerboseContent": false,
+     "FieldLogLevel": "INFO"
+    },
+    "Name": "dev-use1-product-domain-api",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "UserPoolConfig": {
+     "AwsRegion": "us-east-1",
+     "DefaultAction": "ALLOW",
+     "UserPoolId": {
+      "Ref": "ProductAppSyncUserPoolIdParameter96EAE014"
+     }
+    },
+    "XrayEnabled": false
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiSchema61AB305D": {
+   "Type": "AWS::AppSync::GraphQLSchema",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "Definition": "type Query {\n  getProduct(productId: ID!): Product\n  listProducts(\n    makerUserId: ID\n    categoryId: ID\n    status: ProductStatus\n    limit: Int\n    nextToken: String\n  ): ProductsConnection\n  getProductMedia(productId: ID!, limit: Int, nextToken: String): ProductMediaConnection\n  getProductMaterials(productId: ID!, limit: Int, nextToken: String): ProductMaterialsConnection\n  getProductProcessSteps(productId: ID!, limit: Int, nextToken: String): ProcessStepsConnection\n  getProductBatches(productId: ID!, limit: Int, nextToken: String): BatchesConnection\n  getProductCertificates(productId: ID!, limit: Int, nextToken: String): CertificatesConnection\n  getCategories(limit: Int, nextToken: String): CategoriesConnection\n  getCategory(categoryId: ID!): Category\n  getMaterialInventory(makerUserId: ID!, materialId: ID!): MaterialInventory\n  listMaterialInventory(makerUserId: ID!, limit: Int, nextToken: String): MaterialInventoryConnection\n  getLowStockMaterials(makerUserId: ID!): [MaterialInventory!]!\n  getStockMovements(makerUserId: ID!, materialId: ID, limit: Int, nextToken: String): StockMovementsConnection\n  getSupplier(makerUserId: ID!, supplierId: ID!): Supplier\n  listSuppliers(makerUserId: ID!, limit: Int, nextToken: String): SuppliersConnection\n}\n\ntype Mutation {\n  createProduct(input: CreateProductInput!): Product\n  updateProduct(input: UpdateProductInput!): Product\n  publishProduct(productId: ID!): Product\n  pauseProduct(productId: ID!): Product\n  addProductMedia(input: AddProductMediaInput!): ProductMedia\n  removeProductMedia(input: RemoveProductMediaInput!): Boolean\n  addProductMaterial(input: AddProductMaterialInput!): ProductMaterial\n  removeProductMaterial(input: RemoveProductMaterialInput!): Boolean\n  addProcessStep(input: AddProcessStepInput!): ProcessStep\n  removeProcessStep(input: RemoveProcessStepInput!): Boolean\n  createBatch(input: CreateBatchInput!): Batch\n  generateCertificate(input: GenerateCertificateInput!): Certificate\n  addMaterialToInventory(input: AddMaterialInput!): MaterialInventory\n  updateMaterialStock(input: UpdateMaterialStockInput!): MaterialInventory\n  recordStockMovement(input: RecordStockMovementInput!): StockMovement\n  addSupplier(input: AddSupplierInput!): Supplier\n  updateSupplier(input: UpdateSupplierInput!): Supplier\n  removeSupplier(makerUserId: ID!, supplierId: ID!): Boolean\n}\n\ntype Subscription {\n  onProductPublished(makerUserId: ID!): Product\n    @aws_subscribe(mutations: [\"publishProduct\"])\n  onProductUpdated(productId: ID!): Product\n    @aws_subscribe(mutations: [\"updateProduct\"])\n  onProductPaused(productId: ID!): Product\n    @aws_subscribe(mutations: [\"pauseProduct\"])\n  onLowStock(makerUserId: ID!): MaterialInventory\n    @aws_subscribe(mutations: [\"updateMaterialStock\"])\n  onStockMovement(makerUserId: ID!): StockMovement\n    @aws_subscribe(mutations: [\"recordStockMovement\"])\n}\n\nenum ProductStatus {\n  DRAFT\n  ACTIVE\n  PAUSED\n  SOLD_OUT\n  ARCHIVED\n}\n\nenum ProductType {\n  ONE_OF_ONE\n  LIMITED_BATCH\n  MADE_TO_ORDER\n}\n\ntype Product {\n  productId: ID!\n  makerUserId: ID!\n  title: String!\n  description: String!\n  categoryId: ID!\n  category: Category\n  productType: ProductType!\n  basePrice: Float!\n  quantityAvailable: Int\n  status: ProductStatus!\n  media: [ProductMedia!]\n  materials: [ProductMaterial!]\n  processSteps: [ProcessStep!]\n  batches: [Batch!]\n  certificates: [Certificate!]\n  createdAt: AWSDateTime!\n  updatedAt: AWSDateTime!\n}\n\ntype ProductsConnection {\n  items: [Product!]!\n  nextToken: String\n}\n\ntype ProductMedia {\n  productId: ID!\n  mediaId: ID!\n  mediaType: String!\n  url: String!\n  order: Int!\n  createdAt: AWSDateTime!\n}\n\ntype ProductMediaConnection {\n  items: [ProductMedia!]!\n  nextToken: String\n}\n\ntype ProductMaterial {\n  productId: ID!\n  materialId: ID!\n  name: String!\n  source: String!\n  locallySourced: Boolean!\n  upcycled: Boolean!\n  sustainable: Boolean!\n  certificationId: String\n  createdAt: AWSDateTime!\n}\n\ntype ProductMaterialsConnection {\n  items: [ProductMaterial!]!\n  nextToken: String\n}\n\ntype ProcessStep {\n  productId: ID!\n  stepId: ID!\n  stepNumber: Int!\n  title: String!\n  description: String\n  durationMinutes: Int\n  mediaUrl: String\n  createdAt: AWSDateTime!\n}\n\ntype ProcessStepsConnection {\n  items: [ProcessStep!]!\n  nextToken: String\n}\n\ntype Batch {\n  productId: ID!\n  batchId: ID!\n  quantity: Int!\n  remainingQuantity: Int!\n  createdAt: AWSDateTime!\n  producedAt: AWSDateTime\n}\n\ntype BatchesConnection {\n  items: [Batch!]!\n  nextToken: String\n}\n\ntype Certificate {\n  productId: ID!\n  certificateId: ID!\n  orderId: ID!\n  qrCode: String!\n  materialMetadata: AWSJSON!\n  creationMetadata: AWSJSON!\n  createdAt: AWSDateTime!\n}\n\ntype CertificatesConnection {\n  items: [Certificate!]!\n  nextToken: String\n}\n\nenum MaterialType {\n  WOOD\n  METAL\n  LEATHER\n  FABRIC\n  CERAMIC\n  GLASS\n  STONE\n  PAPER\n  PLASTIC\n  RESIN\n  PAINT\n  FINISH\n  ADHESIVE\n  HARDWARE\n  PACKAGING\n  OTHER\n}\n\nenum StockStatus {\n  IN_STOCK\n  LOW_STOCK\n  OUT_OF_STOCK\n  REORDER_PENDING\n}\n\nenum MovementType {\n  PURCHASE\n  USAGE\n  WASTE\n  RETURN_TO_SUPPLIER\n  ADJUSTMENT\n  TRANSFER\n  DAMAGED\n}\n\nenum MeasurementUnit {\n  KILOGRAMS\n  GRAMS\n  POUNDS\n  OUNCES\n  LITERS\n  MILLILITERS\n  METERS\n  CENTIMETERS\n  INCHES\n  FEET\n  SQUARE_METERS\n  SQUARE_FEET\n  PIECES\n  SHEETS\n  ROLLS\n}\n\ntype MaterialInventory {\n  makerUserId: ID!\n  materialId: ID!\n  materialName: String!\n  materialType: MaterialType!\n  currentStock: Float!\n  unit: MeasurementUnit!\n  reorderThreshold: Float!\n  reorderQuantity: Float!\n  stockStatus: StockStatus!\n  costPerUnit: Float!\n  supplierId: ID\n  supplier: Supplier\n  lastRestockDate: AWSDateTime\n  location: String\n  notes: String\n  sustainable: Boolean\n  certified: Boolean\n  certificationId: String\n  originCountry: String\n  createdAt: AWSDateTime!\n  updatedAt: AWSDateTime!\n}\n\ntype MaterialInventoryConnection {\n  items: [MaterialInventory!]!\n  nextToken: String\n}\n\ntype StockMovement {\n  makerUserId: ID!\n  materialId: ID!\n  movementId: ID!\n  movementType: MovementType!\n  quantity: Float!\n  unit: MeasurementUnit!\n  costPerUnit: Float\n  totalCost: Float\n  supplierId: ID\n  orderId: ID\n  productId: ID\n  notes: String\n  movementTimestamp: AWSDateTime!\n}\n\ntype StockMovementsConnection {\n  items: [StockMovement!]!\n  nextToken: String\n}\n\ntype Supplier {\n  makerUserId: ID!\n  supplierId: ID!\n  companyName: String!\n  contactName: String\n  email: String\n  phone: String\n  website: String\n  address: String\n  city: String\n  state: String\n  country: String!\n  postalCode: String\n  materialsSupplied: [MaterialType!]!\n  leadTimeDays: Int!\n  minimumOrderValue: Float\n  paymentTerms: String\n  reliabilityScore: Float\n  sustainabilityCertified: Boolean\n  notes: String\n  lastOrderDate: AWSDateTime\n  totalOrderCount: Int\n  createdAt: AWSDateTime!\n  updatedAt: AWSDateTime!\n}\n\ntype SuppliersConnection {\n  items: [Supplier!]!\n  nextToken: String\n}\n\ninput AddMaterialInput {\n  makerUserId: ID!\n  materialName: String!\n  materialType: MaterialType!\n  currentStock: Float!\n  unit: MeasurementUnit!\n  reorderThreshold: Float!\n  reorderQuantity: Float!\n  costPerUnit: Float!\n  supplierId: ID\n  location: String\n  notes: String\n  sustainable: Boolean\n  certified: Boolean\n  certificationId: String\n  originCountry: String\n}\n\ninput UpdateMaterialStockInput {\n  makerUserId: ID!\n  materialId: ID!\n  currentStock: Float\n  reorderThreshold: Float\n  reorderQuantity: Float\n  costPerUnit: Float\n  location: String\n  notes: String\n}\n\ninput RecordStockMovementInput {\n  makerUserId: ID!\n  materialId: ID!\n  movementType: MovementType!\n  quantity: Float!\n  unit: MeasurementUnit!\n  costPerUnit: Float\n  totalCost: Float\n  supplierId: ID\n  orderId: ID\n  productId: ID\n  notes: String\n}\n\ninput AddSupplierInput {\n  makerUserId: ID!\n  companyName: String!\n  contactName: String\n  email: String\n  phone: String\n  website: String\n  address: String\n  city: String\n  state: String\n  country: String!\n  postalCode: String\n  materialsSupplied: [MaterialType!]!\n  leadTimeDays: Int!\n  minimumOrderValue: Float\n  paymentTerms: String\n  sustainabilityCertified: Boolean\n  notes: String\n}\n\ninput UpdateSupplierInput {\n  makerUserId: ID!\n  supplierId: ID!\n  companyName: String\n  contactName: String\n  email: String\n  phone: String\n  website: String\n  address: String\n  city: String\n  state: String\n  country: String\n  postalCode: String\n  materialsSupplied: [MaterialType!]\n  leadTimeDays: Int\n  minimumOrderValue: Float\n  paymentTerms: String\n  reliabilityScore: Float\n  sustainabilityCertified: Boolean\n  notes: String\n}\n\ntype Category {\n  categoryId: ID!\n  name: String!\n  description: String\n  parentCategoryId: ID\n  createdAt: AWSDateTime!\n}\n\ntype CategoriesConnection {\n  items: [Category!]!\n  nextToken: String\n}\n\ninput CreateProductInput {\n  makerUserId: ID!\n  title: String!\n  description: String!\n  categoryId: ID!\n  productType: ProductType!\n  basePrice: Float!\n  quantityAvailable: Int\n}\n\ninput UpdateProductInput {\n  productId: ID!\n  title: String\n  description: String\n  categoryId: ID\n  basePrice: Float\n  quantityAvailable: Int\n  status: ProductStatus\n}\n\ninput AddProductMediaInput {\n  productId: ID!\n  mediaType: String!\n  url: String!\n  order: Int!\n}\n\ninput RemoveProductMediaInput {\n  productId: ID!\n  mediaId: ID!\n}\n\ninput AddProductMaterialInput {\n  productId: ID!\n  name: String!\n  source: String!\n  locallySourced: Boolean!\n  upcycled: Boolean!\n  sustainable: Boolean!\n  certificationId: String\n}\n\ninput RemoveProductMaterialInput {\n  productId: ID!\n  materialId: ID!\n}\n\ninput AddProcessStepInput {\n  productId: ID!\n  title: String!\n  description: String\n  durationMinutes: Int\n  mediaUrl: String\n}\n\ninput RemoveProcessStepInput {\n  productId: ID!\n  stepId: ID!\n}\n\ninput CreateBatchInput {\n  productId: ID!\n  quantity: Int!\n  producedAt: AWSDateTime\n}\n\ninput GenerateCertificateInput {\n  productId: ID!\n  orderId: ID!\n  materialMetadata: AWSJSON!\n  creationMetadata: AWSJSON!\n}\n"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/Schema"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiLogRetentionF1640BA8": {
+   "Type": "Custom::LogRetention",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A",
+      "Arn"
+     ]
+    },
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/appsync/apis/",
+       {
+        "Fn::GetAtt": [
+         "ProductAppSyncProductAppSyncApiF0916D8C",
+         "ApiId"
+        ]
+       }
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/LogRetention/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiPublishProductDataSourceServiceRole8A443F45": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PublishProductDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiPublishProductDataSourceServiceRoleDefaultPolicy692F44D9": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PublishProductLambdaPublishProductFunction270D5D73",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PublishProductLambdaPublishProductFunction270D5D73",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiPublishProductDataSourceServiceRoleDefaultPolicy692F44D9",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiPublishProductDataSourceServiceRole8A443F45"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PublishProductDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiPublishProductDataSourceBEAC4903": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "PublishProductLambdaPublishProductFunction270D5D73",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "PublishProductDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiPublishProductDataSourceServiceRole8A443F45",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PublishProductDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiPublishProductResolverAD8CDC18": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "PublishProductDataSource",
+    "FieldName": "publishProduct",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiPublishProductDataSourceBEAC4903",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PublishProductResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiCreateProductDataSourceServiceRoleEC81CD18": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateProductDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiCreateProductDataSourceServiceRoleDefaultPolicy245E4E6E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "CreateProductLambdaCreateProductFunction760FBC67",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "CreateProductLambdaCreateProductFunction760FBC67",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiCreateProductDataSourceServiceRoleDefaultPolicy245E4E6E",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiCreateProductDataSourceServiceRoleEC81CD18"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateProductDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiCreateProductDataSourceD0BBDD5E": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "CreateProductLambdaCreateProductFunction760FBC67",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "CreateProductDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiCreateProductDataSourceServiceRoleEC81CD18",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateProductDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiCreateProductResolver10252238": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "CreateProductDataSource",
+    "FieldName": "createProduct",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiCreateProductDataSourceD0BBDD5E",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateProductResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiUpdateProductDataSourceServiceRoleF05C85E7": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/UpdateProductDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiUpdateProductDataSourceServiceRoleDefaultPolicyE1B2B15D": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "UpdateProductLambdaUpdateProductFunctionF67ACBAC",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "UpdateProductLambdaUpdateProductFunctionF67ACBAC",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiUpdateProductDataSourceServiceRoleDefaultPolicyE1B2B15D",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiUpdateProductDataSourceServiceRoleF05C85E7"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/UpdateProductDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiUpdateProductDataSource77376D41": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "UpdateProductLambdaUpdateProductFunctionF67ACBAC",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "UpdateProductDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiUpdateProductDataSourceServiceRoleF05C85E7",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/UpdateProductDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiUpdateProductResolver25A9ED15": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "UpdateProductDataSource",
+    "FieldName": "updateProduct",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiSchema61AB305D",
+    "ProductAppSyncProductAppSyncApiUpdateProductDataSource77376D41"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/UpdateProductResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiPauseProductDataSourceServiceRole4443EF87": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PauseProductDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiPauseProductDataSourceServiceRoleDefaultPolicy2D1C18DD": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "PauseProductLambdaPauseProductFunction3556CA18",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "PauseProductLambdaPauseProductFunction3556CA18",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiPauseProductDataSourceServiceRoleDefaultPolicy2D1C18DD",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiPauseProductDataSourceServiceRole4443EF87"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PauseProductDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiPauseProductDataSourceA8E39F82": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "PauseProductLambdaPauseProductFunction3556CA18",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "PauseProductDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiPauseProductDataSourceServiceRole4443EF87",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PauseProductDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiPauseProductResolver32C9FF97": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "PauseProductDataSource",
+    "FieldName": "pauseProduct",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiPauseProductDataSourceA8E39F82",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PauseProductResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiGetProductDataSourceServiceRoleB3283FB1": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GetProductDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiGetProductDataSourceServiceRoleDefaultPolicy1BD86D03": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "GetProductLambdaGetProductFunction780AB06E",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "GetProductLambdaGetProductFunction780AB06E",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiGetProductDataSourceServiceRoleDefaultPolicy1BD86D03",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiGetProductDataSourceServiceRoleB3283FB1"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GetProductDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiGetProductDataSource2E80A0FD": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "GetProductLambdaGetProductFunction780AB06E",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "GetProductDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiGetProductDataSourceServiceRoleB3283FB1",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GetProductDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiGetProductResolver076CA7E4": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "GetProductDataSource",
+    "FieldName": "getProduct",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Query"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiGetProductDataSource2E80A0FD",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GetProductResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiListProductsDataSourceServiceRole3656105A": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/ListProductsDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiListProductsDataSourceServiceRoleDefaultPolicyF218247F": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ListProductsLambdaListProductsFunction8621D139",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ListProductsLambdaListProductsFunction8621D139",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiListProductsDataSourceServiceRoleDefaultPolicyF218247F",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiListProductsDataSourceServiceRole3656105A"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/ListProductsDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiListProductsDataSource129F5479": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "ListProductsLambdaListProductsFunction8621D139",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "ListProductsDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiListProductsDataSourceServiceRole3656105A",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/ListProductsDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiListProductsResolverE1222265": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "ListProductsDataSource",
+    "FieldName": "listProducts",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Query"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiListProductsDataSource129F5479",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/ListProductsResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProductMediaDataSourceServiceRole2AAA5ECE": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMediaDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProductMediaDataSourceServiceRoleDefaultPolicy3A55439E": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AddProductMediaLambdaAddProductMediaFunction004FF48C",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AddProductMediaLambdaAddProductMediaFunction004FF48C",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiAddProductMediaDataSourceServiceRoleDefaultPolicy3A55439E",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiAddProductMediaDataSourceServiceRole2AAA5ECE"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMediaDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProductMediaDataSource5392B88B": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "AddProductMediaLambdaAddProductMediaFunction004FF48C",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "AddProductMediaDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiAddProductMediaDataSourceServiceRole2AAA5ECE",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMediaDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProductMediaResolverCA16A724": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "AddProductMediaDataSource",
+    "FieldName": "addProductMedia",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiAddProductMediaDataSource5392B88B",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMediaResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProductMaterialDataSourceServiceRole93726718": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMaterialDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProductMaterialDataSourceServiceRoleDefaultPolicyF88FAD10": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AddProductMaterialLambdaAddProductMaterialFunctionE04E7E02",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AddProductMaterialLambdaAddProductMaterialFunctionE04E7E02",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiAddProductMaterialDataSourceServiceRoleDefaultPolicyF88FAD10",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiAddProductMaterialDataSourceServiceRole93726718"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMaterialDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProductMaterialDataSource5FF73DFE": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "AddProductMaterialLambdaAddProductMaterialFunctionE04E7E02",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "AddProductMaterialDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiAddProductMaterialDataSourceServiceRole93726718",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMaterialDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProductMaterialResolver5C1BA82B": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "AddProductMaterialDataSource",
+    "FieldName": "addProductMaterial",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiAddProductMaterialDataSource5FF73DFE",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMaterialResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceServiceRole71C7B128": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProcessStepDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceServiceRoleDefaultPolicyF61F73FD": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "AddProcessStepLambdaAddProcessStepFunction101B0EAF",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "AddProcessStepLambdaAddProcessStepFunction101B0EAF",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceServiceRoleDefaultPolicyF61F73FD",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceServiceRole71C7B128"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProcessStepDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceA65905D5": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "AddProcessStepLambdaAddProcessStepFunction101B0EAF",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "AddProcessStepDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceServiceRole71C7B128",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProcessStepDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiAddProcessStepResolver607D8FB7": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "AddProcessStepDataSource",
+    "FieldName": "addProcessStep",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceA65905D5",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProcessStepResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiCreateBatchDataSourceServiceRole82510429": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateBatchDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiCreateBatchDataSourceServiceRoleDefaultPolicy1C73F1CC": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "CreateBatchLambdaCreateBatchFunction0FA8AD37",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "CreateBatchLambdaCreateBatchFunction0FA8AD37",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiCreateBatchDataSourceServiceRoleDefaultPolicy1C73F1CC",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiCreateBatchDataSourceServiceRole82510429"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateBatchDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiCreateBatchDataSourceFAA7ACDD": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "CreateBatchLambdaCreateBatchFunction0FA8AD37",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "CreateBatchDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiCreateBatchDataSourceServiceRole82510429",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateBatchDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiCreateBatchResolverF9D23663": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "CreateBatchDataSource",
+    "FieldName": "createBatch",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiCreateBatchDataSourceFAA7ACDD",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateBatchResolver/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceServiceRoleDC44D6AC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GenerateCertificateDataSource/ServiceRole/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceServiceRoleDefaultPolicy45258D54": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "GenerateCertificateLambdaGenerateCertificateFunctionF9DEEAB1",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "GenerateCertificateLambdaGenerateCertificateFunctionF9DEEAB1",
+             "Arn"
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceServiceRoleDefaultPolicy45258D54",
+    "Roles": [
+     {
+      "Ref": "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceServiceRoleDC44D6AC"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GenerateCertificateDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceCFD01703": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::GetAtt": [
+       "GenerateCertificateLambdaGenerateCertificateFunctionF9DEEAB1",
+       "Arn"
+      ]
+     }
+    },
+    "Name": "GenerateCertificateDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceServiceRoleDC44D6AC",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GenerateCertificateDataSource/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiGenerateCertificateResolver16A0F36B": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    },
+    "DataSourceName": "GenerateCertificateDataSource",
+    "FieldName": "generateCertificate",
+    "Kind": "UNIT",
+    "RequestMappingTemplate": "{\"version\": \"2017-02-28\", \"operation\": \"Invoke\", \"payload\": $util.toJson($ctx)}",
+    "ResponseMappingTemplate": "$util.toJson($ctx.result)",
+    "TypeName": "Mutation"
+   },
+   "DependsOn": [
+    "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceCFD01703",
+    "ProductAppSyncProductAppSyncApiSchema61AB305D"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GenerateCertificateResolver/Resource"
+   }
+  },
+  "ProductAppSyncApiLogGroup16047D2A": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": {
+     "Fn::Join": [
+      "",
+      [
+       "/aws/appsync/apis/",
+       {
+        "Fn::GetAtt": [
+         "ProductAppSyncProductAppSyncApiF0916D8C",
+         "ApiId"
+        ]
+       }
+      ]
+     ]
+    },
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ApiLogGroup/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiUrlParameterBF3D8153": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Product Domain AppSync GraphQL API URL",
+    "Name": "/dev/product-domain/appsync/api-url",
+    "Tags": {
+     "Domain": "product-domain",
+     "Environment": "dev",
+     "Project": "hand-made",
+     "Region": "use1",
+     "StackName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Type": "String",
+    "Value": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "GraphQLUrl"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApiUrlParameter/Resource"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiIdParameter8A27D1B0": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Product Domain AppSync GraphQL API ID",
+    "Name": "/dev/product-domain/appsync/api-id",
+    "Tags": {
+     "Domain": "product-domain",
+     "Environment": "dev",
+     "Project": "hand-made",
+     "Region": "use1",
+     "StackName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Type": "String",
+    "Value": {
+     "Fn::GetAtt": [
+      "ProductAppSyncProductAppSyncApiF0916D8C",
+      "ApiId"
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApiIdParameter/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ],
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:PutRetentionPolicy",
+        "logs:DeleteRetentionPolicy"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "Roles": [
+     {
+      "Ref": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Handler": "index.handler",
+    "Runtime": "nodejs22.x",
+    "Timeout": 900,
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB",
+      "Arn"
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "DependsOn": [
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB",
+    "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource",
+    "aws:asset:path": "asset.2819175352ad1ce0dae768e83fc328fb70fb5f10b4a8ff0ccbcb791f02b0716d",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ProductMediaBucketsProductMediaBucket71492FF3": {
+   "Type": "AWS::S3::Bucket",
+   "Properties": {
+    "BucketEncryption": {
+     "ServerSideEncryptionConfiguration": [
+      {
+       "ServerSideEncryptionByDefault": {
+        "SSEAlgorithm": "AES256"
+       }
+      }
+     ]
+    },
+    "BucketName": "dev-use1-product-domain-product-media-bucket",
+    "CorsConfiguration": {
+     "CorsRules": [
+      {
+       "AllowedHeaders": [
+        "*"
+       ],
+       "AllowedMethods": [
+        "GET",
+        "PUT",
+        "POST"
+       ],
+       "AllowedOrigins": [
+        "*"
+       ],
+       "MaxAge": 3000
+      }
+     ]
+    },
+    "LifecycleConfiguration": {
+     "Rules": [
+      {
+       "ExpirationInDays": 90,
+       "Id": "DeleteOldVersions",
+       "Status": "Enabled"
+      }
+     ]
+    },
+    "PublicAccessBlockConfiguration": {
+     "BlockPublicAcls": true,
+     "BlockPublicPolicy": true,
+     "IgnorePublicAcls": true,
+     "RestrictPublicBuckets": true
+    },
+    "Tags": [
+     {
+      "Key": "aws-cdk:auto-delete-objects",
+      "Value": "true"
+     },
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductMediaBuckets/ProductMediaBucket/Resource"
+   }
+  },
+  "ProductMediaBucketsProductMediaBucketPolicyA4264E6D": {
+   "Type": "AWS::S3::BucketPolicy",
+   "Properties": {
+    "Bucket": {
+     "Ref": "ProductMediaBucketsProductMediaBucket71492FF3"
+    },
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:PutBucketPolicy",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*"
+       ],
+       "Effect": "Allow",
+       "Principal": {
+        "AWS": {
+         "Fn::GetAtt": [
+          "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+          "Arn"
+         ]
+        }
+       },
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductMediaBucketsProductMediaBucket71492FF3",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductMediaBucketsProductMediaBucket71492FF3",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductMediaBuckets/ProductMediaBucket/Policy/Resource"
+   }
+  },
+  "ProductMediaBucketsProductMediaBucketAutoDeleteObjectsCustomResource93C16E68": {
+   "Type": "Custom::S3AutoDeleteObjects",
+   "Properties": {
+    "ServiceToken": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F",
+      "Arn"
+     ]
+    },
+    "BucketName": {
+     "Ref": "ProductMediaBucketsProductMediaBucket71492FF3"
+    }
+   },
+   "DependsOn": [
+    "ProductMediaBucketsProductMediaBucketPolicyA4264E6D"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductMediaBuckets/ProductMediaBucket/AutoDeleteObjectsCustomResource/Default"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Version": "2012-10-17",
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ]
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Sub": "arn:${AWS::Partition}:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role"
+   }
+  },
+  "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6.zip"
+    },
+    "Timeout": 900,
+    "MemorySize": 128,
+    "Handler": "index.handler",
+    "Role": {
+     "Fn::GetAtt": [
+      "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Description": {
+     "Fn::Join": [
+      "",
+      [
+       "Lambda function for auto-deleting objects in ",
+       {
+        "Ref": "ProductMediaBucketsProductMediaBucket71492FF3"
+       },
+       " S3 bucket."
+      ]
+     ]
+    }
+   },
+   "DependsOn": [
+    "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler",
+    "aws:asset:path": "asset.faa95a81ae7d7373f3e1f242268f904eb748d8d0fdd306e8a6fe515a1905a7d6",
+    "aws:asset:property": "Code"
+   }
+  },
+  "ProductTablesProductsTableF1442512": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "productId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "makerUserId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "createdAt",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "categoryId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "status",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-MakerUserId",
+      "KeySchema": [
+       {
+        "AttributeName": "makerUserId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI2-CategoryId",
+      "KeySchema": [
+       {
+        "AttributeName": "categoryId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     },
+     {
+      "IndexName": "GSI3-Status",
+      "KeySchema": [
+       {
+        "AttributeName": "status",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "createdAt",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "productId",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-products-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductTables/ProductsTable/Resource"
+   }
+  },
+  "ProductTablesProductMediaTable0DB14C82": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "productId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "mediaId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "productId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "mediaId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-product-media-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductTables/ProductMediaTable/Resource"
+   }
+  },
+  "ProductTablesProductMaterialsTableC781ABD7": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "productId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "materialId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "source",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-Source",
+      "KeySchema": [
+       {
+        "AttributeName": "source",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "productId",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "productId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "materialId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-product-materials-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductTables/ProductMaterialsTable/Resource"
+   }
+  },
+  "ProductTablesProductProcessStepsTable62234030": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "productId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "stepOrder",
+      "AttributeType": "N"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "productId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "stepOrder",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-product-process-steps-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductTables/ProductProcessStepsTable/Resource"
+   }
+  },
+  "ProductTablesProductBatchesTable72C0D113": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "productId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "batchId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "KeySchema": [
+     {
+      "AttributeName": "productId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "batchId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-product-batches-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductTables/ProductBatchesTable/Resource"
+   }
+  },
+  "ProductTablesProductCertificatesTable3C9CD20A": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "productId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "certificateId",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-CertificateId",
+      "KeySchema": [
+       {
+        "AttributeName": "certificateId",
+        "KeyType": "HASH"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "productId",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "certificateId",
+      "KeyType": "RANGE"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-product-certificates-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductTables/ProductCertificatesTable/Resource"
+   }
+  },
+  "ProductTablesCategoriesTableC70AD82A": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "categoryId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "parentId",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "name",
+      "AttributeType": "S"
+     }
+    ],
+    "BillingMode": "PAY_PER_REQUEST",
+    "GlobalSecondaryIndexes": [
+     {
+      "IndexName": "GSI1-ParentId",
+      "KeySchema": [
+       {
+        "AttributeName": "parentId",
+        "KeyType": "HASH"
+       },
+       {
+        "AttributeName": "name",
+        "KeyType": "RANGE"
+       }
+      ],
+      "Projection": {
+       "ProjectionType": "ALL"
+      }
+     }
+    ],
+    "KeySchema": [
+     {
+      "AttributeName": "categoryId",
+      "KeyType": "HASH"
+     }
+    ],
+    "PointInTimeRecoverySpecification": {
+     "PointInTimeRecoveryEnabled": false
+    },
+    "SSESpecification": {
+     "SSEEnabled": true
+    },
+    "TableName": "dev-use1-product-domain-categories-table",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductTables/CategoriesTable/Resource"
+   }
+  },
+  "ProductStateMachineProductStateMachineLogGroup796393B1": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/stepfunctions/dev-use1-product-domain-state-machine",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachineLogGroup/Resource"
+   }
+  },
+  "ProductStateMachineRole802A21C7": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "states.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachine/Role/Resource"
+   }
+  },
+  "ProductStateMachineRoleDefaultPolicy7E7B5C80": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "logs:CreateLogDelivery",
+        "logs:GetLogDelivery",
+        "logs:UpdateLogDelivery",
+        "logs:DeleteLogDelivery",
+        "logs:ListLogDeliveries",
+        "logs:PutResourcePolicy",
+        "logs:DescribeResourcePolicies",
+        "logs:DescribeLogGroups"
+       ],
+       "Effect": "Allow",
+       "Resource": "*"
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ProductTablesProductMediaTable0DB14C82",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ProductTablesProductMediaTable0DB14C82",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ProductStateMachineRoleDefaultPolicy7E7B5C80",
+    "Roles": [
+     {
+      "Ref": "ProductStateMachineRole802A21C7"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachine/Role/DefaultPolicy/Resource"
+   }
+  },
+  "ProductStateMachine087882B3": {
+   "Type": "AWS::StepFunctions::StateMachine",
+   "Properties": {
+    "DefinitionString": "{\n  \"Comment\": \"Product Domain State Machine - Handles product publication workflow and status transitions\",\n  \"StartAt\": \"RouteProductAction\",\n  \"States\": {\n    \"RouteProductAction\": {\n      \"Type\": \"Choice\",\n      \"Choices\": [\n        {\n          \"Variable\": \"$.action\",\n          \"StringEquals\": \"publish\",\n          \"Next\": \"ValidateProductForPublication\"\n        },\n        {\n          \"Variable\": \"$.action\",\n          \"StringEquals\": \"pause\",\n          \"Next\": \"PauseProduct\"\n        },\n        {\n          \"Variable\": \"$.action\",\n          \"StringEquals\": \"updateQuantity\",\n          \"Next\": \"UpdateProductQuantity\"\n        }\n      ],\n      \"Default\": \"InvalidProductAction\"\n    },\n    \"InvalidProductAction\": {\n      \"Type\": \"Fail\",\n      \"Error\": \"InvalidProductAction\",\n      \"Cause\": \"Action must be publish, pause, or updateQuantity\"\n    },\n    \"ValidateProductForPublication\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::dynamodb:getItem\",\n      \"Parameters\": {\n        \"TableName\": \"${ProductsTableName}\",\n        \"Key\": {\n          \"productId\": {\n            \"S.$\": \"$.productId\"\n          }\n        }\n      },\n      \"ResultPath\": \"$.productData\",\n      \"Next\": \"CheckProductStatus\"\n    },\n    \"CheckProductStatus\": {\n      \"Type\": \"Choice\",\n      \"Choices\": [\n        {\n          \"Variable\": \"$.productData.Item.status.S\",\n          \"StringEquals\": \"DRAFT\",\n          \"Next\": \"CheckProductMedia\"\n        }\n      ],\n      \"Default\": \"InvalidProductStatusForPublication\"\n    },\n    \"InvalidProductStatusForPublication\": {\n      \"Type\": \"Fail\",\n      \"Error\": \"InvalidProductStatus\",\n      \"Cause\": \"Product must be in DRAFT status to publish\"\n    },\n    \"CheckProductMedia\": {\n      \"Type\": \"Pass\",\n      \"Comment\": \"Media check is handled by Lambda functions before state machine execution\",\n      \"Next\": \"UpdateProductToActive\"\n    },\n    \"UpdateProductToActive\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::dynamodb:updateItem\",\n      \"Parameters\": {\n        \"TableName\": \"${ProductsTableName}\",\n        \"Key\": {\n          \"productId\": {\n            \"S.$\": \"$.productId\"\n          }\n        },\n        \"UpdateExpression\": \"SET #status = :status, publishedAt = :publishedAt, updatedAt = :updatedAt\",\n        \"ExpressionAttributeNames\": {\n          \"#status\": \"status\"\n        },\n        \"ExpressionAttributeValues\": {\n          \":status\": {\n            \"S\": \"ACTIVE\"\n          },\n          \":publishedAt\": {\n            \"S.$\": \"$$.State.EnteredTime\"\n          },\n          \":updatedAt\": {\n            \"S.$\": \"$$.State.EnteredTime\"\n          }\n        }\n      },\n      \"ResultPath\": \"$.updateResult\",\n      \"Next\": \"PublicationSuccess\"\n    },\n    \"PublicationSuccess\": {\n      \"Type\": \"Succeed\"\n    },\n    \"PauseProduct\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::dynamodb:getItem\",\n      \"Parameters\": {\n        \"TableName\": \"${ProductsTableName}\",\n        \"Key\": {\n          \"productId\": {\n            \"S.$\": \"$.productId\"\n          }\n        }\n      },\n      \"ResultPath\": \"$.productData\",\n      \"Next\": \"ValidateProductCanPause\"\n    },\n    \"ValidateProductCanPause\": {\n      \"Type\": \"Choice\",\n      \"Choices\": [\n        {\n          \"Variable\": \"$.productData.Item.status.S\",\n          \"StringEquals\": \"ACTIVE\",\n          \"Next\": \"UpdateProductToPaused\"\n        }\n      ],\n      \"Default\": \"InvalidStatusForPause\"\n    },\n    \"InvalidStatusForPause\": {\n      \"Type\": \"Fail\",\n      \"Error\": \"InvalidStatusForPause\",\n      \"Cause\": \"Only ACTIVE products can be paused\"\n    },\n    \"UpdateProductToPaused\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::dynamodb:updateItem\",\n      \"Parameters\": {\n        \"TableName\": \"${ProductsTableName}\",\n        \"Key\": {\n          \"productId\": {\n            \"S.$\": \"$.productId\"\n          }\n        },\n        \"UpdateExpression\": \"SET #status = :status, pausedAt = :pausedAt, updatedAt = :updatedAt\",\n        \"ExpressionAttributeNames\": {\n          \"#status\": \"status\"\n        },\n        \"ExpressionAttributeValues\": {\n          \":status\": {\n            \"S\": \"PAUSED\"\n          },\n          \":pausedAt\": {\n            \"S.$\": \"$$.State.EnteredTime\"\n          },\n          \":updatedAt\": {\n            \"S.$\": \"$$.State.EnteredTime\"\n          }\n        }\n      },\n      \"ResultPath\": \"$.updateResult\",\n      \"Next\": \"PauseSuccess\"\n    },\n    \"PauseSuccess\": {\n      \"Type\": \"Succeed\"\n    },\n    \"UpdateProductQuantity\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::dynamodb:getItem\",\n      \"Parameters\": {\n        \"TableName\": \"${ProductsTableName}\",\n        \"Key\": {\n          \"productId\": {\n            \"S.$\": \"$.productId\"\n          }\n        }\n      },\n      \"ResultPath\": \"$.productData\",\n      \"Next\": \"ValidateQuantityUpdate\"\n    },\n    \"ValidateQuantityUpdate\": {\n      \"Type\": \"Choice\",\n      \"Choices\": [\n        {\n          \"And\": [\n            {\n              \"Variable\": \"$.newQuantity\",\n              \"NumericGreaterThan\": 0\n            },\n            {\n              \"Variable\": \"$.productData.Item.productType.S\",\n              \"StringEquals\": \"LIMITED_BATCH\"\n            }\n          ],\n          \"Next\": \"UpdateQuantity\"\n        },\n        {\n          \"Variable\": \"$.newQuantity\",\n          \"NumericEquals\": 0,\n          \"Next\": \"UpdateToSoldOut\"\n        }\n      ],\n      \"Default\": \"InvalidQuantityUpdate\"\n    },\n    \"InvalidQuantityUpdate\": {\n      \"Type\": \"Fail\",\n      \"Error\": \"InvalidQuantityUpdate\",\n      \"Cause\": \"Quantity must be positive or zero (for sold out)\"\n    },\n    \"UpdateQuantity\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::dynamodb:updateItem\",\n      \"Parameters\": {\n        \"TableName\": \"${ProductsTableName}\",\n        \"Key\": {\n          \"productId\": {\n            \"S.$\": \"$.productId\"\n          }\n        },\n        \"UpdateExpression\": \"SET quantityAvailable = :quantity, updatedAt = :updatedAt\",\n        \"ExpressionAttributeValues\": {\n          \":quantity\": {\n            \"N.$\": \"$.newQuantity\"\n          },\n          \":updatedAt\": {\n            \"S.$\": \"$$.State.EnteredTime\"\n          }\n        }\n      },\n      \"Next\": \"QuantityUpdateSuccess\"\n    },\n    \"UpdateToSoldOut\": {\n      \"Type\": \"Task\",\n      \"Resource\": \"arn:aws:states:::dynamodb:updateItem\",\n      \"Parameters\": {\n        \"TableName\": \"${ProductsTableName}\",\n        \"Key\": {\n          \"productId\": {\n            \"S.$\": \"$.productId\"\n          }\n        },\n        \"UpdateExpression\": \"SET #status = :status, quantityAvailable = :quantity, soldOutAt = :soldOutAt, updatedAt = :updatedAt\",\n        \"ExpressionAttributeNames\": {\n          \"#status\": \"status\"\n        },\n        \"ExpressionAttributeValues\": {\n          \":status\": {\n            \"S\": \"SOLD_OUT\"\n          },\n          \":quantity\": {\n            \"N\": \"0\"\n          },\n          \":soldOutAt\": {\n            \"S.$\": \"$$.State.EnteredTime\"\n          },\n          \":updatedAt\": {\n            \"S.$\": \"$$.State.EnteredTime\"\n          }\n        }\n      },\n      \"ResultPath\": \"$.updateResult\",\n      \"Next\": \"SoldOutSuccess\"\n    },\n    \"SoldOutSuccess\": {\n      \"Type\": \"Succeed\"\n    },\n    \"QuantityUpdateSuccess\": {\n      \"Type\": \"Succeed\"\n    }\n  }\n}\n",
+    "LoggingConfiguration": {
+     "Destinations": [
+      {
+       "CloudWatchLogsLogGroup": {
+        "LogGroupArn": {
+         "Fn::GetAtt": [
+          "ProductStateMachineProductStateMachineLogGroup796393B1",
+          "Arn"
+         ]
+        }
+       }
+      }
+     ],
+     "IncludeExecutionData": true,
+     "Level": "ALL"
+    },
+    "RoleArn": {
+     "Fn::GetAtt": [
+      "ProductStateMachineRole802A21C7",
+      "Arn"
+     ]
+    },
+    "StateMachineName": "dev-use1-product-domain-state-machine",
+    "StateMachineType": "EXPRESS",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "TracingConfiguration": {
+     "Enabled": false
+    }
+   },
+   "DependsOn": [
+    "ProductStateMachineRoleDefaultPolicy7E7B5C80",
+    "ProductStateMachineRole802A21C7"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachine/Resource"
+   }
+  },
+  "ProductStateMachineProductStateMachineArnParameter0DC28DA8": {
+   "Type": "AWS::SSM::Parameter",
+   "Properties": {
+    "Description": "Product Domain Step Functions State Machine ARN",
+    "Name": "/dev/product-domain/stepfunctions/state-machine-arn",
+    "Tags": {
+     "Domain": "product-domain",
+     "Environment": "dev",
+     "Project": "hand-made",
+     "Region": "use1",
+     "StackName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Type": "String",
+    "Value": {
+     "Ref": "ProductStateMachine087882B3"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachineArnParameter/Resource"
+   }
+  },
+  "PublishProductLambdaPublishProductLambdaRole42C9006C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Publish Product Lambda with Step Functions access",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-publish-product-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": "states:StartSyncExecution",
+         "Effect": "Allow",
+         "Resource": {
+          "Ref": "ProductStateMachine087882B3"
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "StepFunctionsAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-publish-product-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/PublishProductLambda/PublishProductLambdaRole/Resource"
+   }
+  },
+  "PublishProductLambdaPublishProductLogGroup64A5FFBE": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-publish-product-lambda",
+    "RetentionInDays": 7,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/PublishProductLambda/PublishProductLogGroup/Resource"
+   }
+  },
+  "PublishProductLambdaPublishProductFunction270D5D73": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "820ea9db678723c9e49b4bbbcfabf9bd600111c13141491050eae9226ad76669.zip"
+    },
+    "Description": "Publish product by invoking Step Functions state machine",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "STATE_MACHINE_ARN": {
+       "Ref": "ProductStateMachine087882B3"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-publish-product-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "PublishProductLambdaPublishProductLogGroup64A5FFBE"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "PublishProductLambdaPublishProductLambdaRole42C9006C",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 300
+   },
+   "DependsOn": [
+    "PublishProductLambdaPublishProductLambdaRole42C9006C"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/PublishProductLambda/PublishProductFunction/Resource",
+    "aws:asset:path": "asset.820ea9db678723c9e49b4bbbcfabf9bd600111c13141491050eae9226ad76669",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CreateProductLambdaCreateProductLambdaRole99AF6129": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Create Product Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-create-product-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": "dynamodb:PutItem",
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::GetAtt": [
+           "ProductTablesProductsTableF1442512",
+           "Arn"
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-create-product-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CreateProductLambda/CreateProductLambdaRole/Resource"
+   }
+  },
+  "CreateProductLambdaCreateProductLambdaRoleDefaultPolicyDBA4A5ED": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CreateProductLambdaCreateProductLambdaRoleDefaultPolicyDBA4A5ED",
+    "Roles": [
+     {
+      "Ref": "CreateProductLambdaCreateProductLambdaRole99AF6129"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CreateProductLambda/CreateProductLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreateProductLambdaCreateProductLogGroupAB6CCCA4": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-create-product-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CreateProductLambda/CreateProductLogGroup/Resource"
+   }
+  },
+  "CreateProductLambdaCreateProductFunction760FBC67": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "e45aec3e480726f9cd82f0706f8407d996bc84ad7347839f946d6b993d00146d.zip"
+    },
+    "Description": "Create a new product",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-create-product-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "CreateProductLambdaCreateProductLogGroupAB6CCCA4"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "CreateProductLambdaCreateProductLambdaRole99AF6129",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "CreateProductLambdaCreateProductLambdaRoleDefaultPolicyDBA4A5ED",
+    "CreateProductLambdaCreateProductLambdaRole99AF6129"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CreateProductLambda/CreateProductFunction/Resource",
+    "aws:asset:path": "asset.e45aec3e480726f9cd82f0706f8407d996bc84ad7347839f946d6b993d00146d",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "UpdateProductLambdaUpdateProductLambdaRole2C156BB8": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Update Product Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-update-product-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::GetAtt": [
+           "ProductTablesProductsTableF1442512",
+           "Arn"
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-update-product-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/UpdateProductLambda/UpdateProductLambdaRole/Resource"
+   }
+  },
+  "UpdateProductLambdaUpdateProductLambdaRoleDefaultPolicy4140EDFE": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "UpdateProductLambdaUpdateProductLambdaRoleDefaultPolicy4140EDFE",
+    "Roles": [
+     {
+      "Ref": "UpdateProductLambdaUpdateProductLambdaRole2C156BB8"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/UpdateProductLambda/UpdateProductLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "UpdateProductLambdaUpdateProductLogGroupF7EBA2A6": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-update-product-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/UpdateProductLambda/UpdateProductLogGroup/Resource"
+   }
+  },
+  "UpdateProductLambdaUpdateProductFunctionF67ACBAC": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "264eb4985b8ea7f87aee6d8f0a0efa6bacfaff27ab4f1b0991b9d210389ccbdc.zip"
+    },
+    "Description": "Update an existing product",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-update-product-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "UpdateProductLambdaUpdateProductLogGroupF7EBA2A6"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "UpdateProductLambdaUpdateProductLambdaRole2C156BB8",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "UpdateProductLambdaUpdateProductLambdaRoleDefaultPolicy4140EDFE",
+    "UpdateProductLambdaUpdateProductLambdaRole2C156BB8"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/UpdateProductLambda/UpdateProductFunction/Resource",
+    "aws:asset:path": "asset.264eb4985b8ea7f87aee6d8f0a0efa6bacfaff27ab4f1b0991b9d210389ccbdc",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "PauseProductLambdaPauseProductLambdaRole77847903": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Pause Product Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-pause-product-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::GetAtt": [
+           "ProductTablesProductsTableF1442512",
+           "Arn"
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-pause-product-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/PauseProductLambda/PauseProductLambdaRole/Resource"
+   }
+  },
+  "PauseProductLambdaPauseProductLambdaRoleDefaultPolicyB7DB481B": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "PauseProductLambdaPauseProductLambdaRoleDefaultPolicyB7DB481B",
+    "Roles": [
+     {
+      "Ref": "PauseProductLambdaPauseProductLambdaRole77847903"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/PauseProductLambda/PauseProductLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "PauseProductLambdaPauseProductLogGroup10093C09": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-pause-product-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/PauseProductLambda/PauseProductLogGroup/Resource"
+   }
+  },
+  "PauseProductLambdaPauseProductFunction3556CA18": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "a7fb3f5cdcd821c3b203a73312a4ffa5982ff7fe1c168347e8c0c5462867e64c.zip"
+    },
+    "Description": "Pause a product",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-pause-product-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "PauseProductLambdaPauseProductLogGroup10093C09"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "PauseProductLambdaPauseProductLambdaRole77847903",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "PauseProductLambdaPauseProductLambdaRoleDefaultPolicyB7DB481B",
+    "PauseProductLambdaPauseProductLambdaRole77847903"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/PauseProductLambda/PauseProductFunction/Resource",
+    "aws:asset:path": "asset.a7fb3f5cdcd821c3b203a73312a4ffa5982ff7fe1c168347e8c0c5462867e64c",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GetProductLambdaGetProductLambdaRole0C315FCF": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Get Product Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-get-product-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:Query"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::GetAtt": [
+            "ProductTablesProductsTableF1442512",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::GetAtt": [
+            "ProductTablesProductMediaTable0DB14C82",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-get-product-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/GetProductLambda/GetProductLambdaRole/Resource"
+   }
+  },
+  "GetProductLambdaGetProductLambdaRoleDefaultPolicy1034D16A": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ProductTablesProductMediaTable0DB14C82",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ProductTablesProductMediaTable0DB14C82",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GetProductLambdaGetProductLambdaRoleDefaultPolicy1034D16A",
+    "Roles": [
+     {
+      "Ref": "GetProductLambdaGetProductLambdaRole0C315FCF"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/GetProductLambda/GetProductLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "GetProductLambdaGetProductLogGroupBE884500": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-get-product-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/GetProductLambda/GetProductLogGroup/Resource"
+   }
+  },
+  "GetProductLambdaGetProductFunction780AB06E": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "426bac27f6188a297c167d79b300faf01f2c77ca21ca625a41005c2f835e433a.zip"
+    },
+    "Description": "Get product by product ID",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "PRODUCT_MEDIA_TABLE_NAME": {
+       "Ref": "ProductTablesProductMediaTable0DB14C82"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-get-product-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "GetProductLambdaGetProductLogGroupBE884500"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "GetProductLambdaGetProductLambdaRole0C315FCF",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "GetProductLambdaGetProductLambdaRoleDefaultPolicy1034D16A",
+    "GetProductLambdaGetProductLambdaRole0C315FCF"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/GetProductLambda/GetProductFunction/Resource",
+    "aws:asset:path": "asset.426bac27f6188a297c167d79b300faf01f2c77ca21ca625a41005c2f835e433a",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "ListProductsLambdaListProductsLambdaRoleC852C30E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for List Products Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-list-products-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": "dynamodb:Query",
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::GetAtt": [
+            "ProductTablesProductsTableF1442512",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::Join": [
+            "",
+            [
+             {
+              "Fn::GetAtt": [
+               "ProductTablesProductsTableF1442512",
+               "Arn"
+              ]
+             },
+             "/index/*"
+            ]
+           ]
+          }
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-list-products-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ListProductsLambda/ListProductsLambdaRole/Resource"
+   }
+  },
+  "ListProductsLambdaListProductsLambdaRoleDefaultPolicyB6E04830": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "ListProductsLambdaListProductsLambdaRoleDefaultPolicyB6E04830",
+    "Roles": [
+     {
+      "Ref": "ListProductsLambdaListProductsLambdaRoleC852C30E"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ListProductsLambda/ListProductsLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "ListProductsLambdaListProductsLogGroupC3C76A49": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-list-products-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ListProductsLambda/ListProductsLogGroup/Resource"
+   }
+  },
+  "ListProductsLambdaListProductsFunction8621D139": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "d6ac19b7919943021746092a0bfa1f59b906655fb6d9cfdd2dfdda282eed6c3a.zip"
+    },
+    "Description": "List products with filters",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-list-products-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "ListProductsLambdaListProductsLogGroupC3C76A49"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "ListProductsLambdaListProductsLambdaRoleC852C30E",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "ListProductsLambdaListProductsLambdaRoleDefaultPolicyB6E04830",
+    "ListProductsLambdaListProductsLambdaRoleC852C30E"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/ListProductsLambda/ListProductsFunction/Resource",
+    "aws:asset:path": "asset.d6ac19b7919943021746092a0bfa1f59b906655fb6d9cfdd2dfdda282eed6c3a",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AddProductMediaLambdaAddProductMediaLambdaRoleF5536B33": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Add Product Media Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-add-product-media-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:PutItem"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::GetAtt": [
+            "ProductTablesProductsTableF1442512",
+            "Arn"
+           ]
+          },
+          {
+           "Fn::GetAtt": [
+            "ProductTablesProductMediaTable0DB14C82",
+            "Arn"
+           ]
+          }
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-add-product-media-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProductMediaLambda/AddProductMediaLambdaRole/Resource"
+   }
+  },
+  "AddProductMediaLambdaAddProductMediaLambdaRoleDefaultPolicyA516E7A4": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:DeleteObject"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::Join": [
+         "",
+         [
+          {
+           "Fn::GetAtt": [
+            "ProductMediaBucketsProductMediaBucket71492FF3",
+            "Arn"
+           ]
+          },
+          "/*"
+         ]
+        ]
+       }
+      },
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "ProductTablesProductMediaTable0DB14C82",
+         "Arn"
+        ]
+       }
+      },
+      {
+       "Action": [
+        "s3:GetObject*",
+        "s3:GetBucket*",
+        "s3:List*",
+        "s3:DeleteObject*",
+        "s3:PutObject",
+        "s3:PutObjectLegalHold",
+        "s3:PutObjectRetention",
+        "s3:PutObjectTagging",
+        "s3:PutObjectVersionTagging",
+        "s3:Abort*"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductMediaBucketsProductMediaBucket71492FF3",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductMediaBucketsProductMediaBucket71492FF3",
+             "Arn"
+            ]
+           },
+           "/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AddProductMediaLambdaAddProductMediaLambdaRoleDefaultPolicyA516E7A4",
+    "Roles": [
+     {
+      "Ref": "AddProductMediaLambdaAddProductMediaLambdaRoleF5536B33"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProductMediaLambda/AddProductMediaLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "AddProductMediaLambdaAddProductMediaLogGroup032B8487": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-add-product-media-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProductMediaLambda/AddProductMediaLogGroup/Resource"
+   }
+  },
+  "AddProductMediaLambdaAddProductMediaFunction004FF48C": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "14de74085fd6c1b4403e6d7f63afceca52bb6f841f99c8c5c652aa4ae580de39.zip"
+    },
+    "Description": "Add media (images, videos) to a product",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "PRODUCT_MEDIA_TABLE_NAME": {
+       "Ref": "ProductTablesProductMediaTable0DB14C82"
+      },
+      "PRODUCT_MEDIA_BUCKET_NAME": {
+       "Ref": "ProductMediaBucketsProductMediaBucket71492FF3"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-add-product-media-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "AddProductMediaLambdaAddProductMediaLogGroup032B8487"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "AddProductMediaLambdaAddProductMediaLambdaRoleF5536B33",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "AddProductMediaLambdaAddProductMediaLambdaRoleDefaultPolicyA516E7A4",
+    "AddProductMediaLambdaAddProductMediaLambdaRoleF5536B33"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProductMediaLambda/AddProductMediaFunction/Resource",
+    "aws:asset:path": "asset.14de74085fd6c1b4403e6d7f63afceca52bb6f841f99c8c5c652aa4ae580de39",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AddProductMaterialLambdaAddProductMaterialLambdaRoleE3625DB3": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Add Product Material Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-add-product-material-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::GetAtt": [
+           "ProductTablesProductsTableF1442512",
+           "Arn"
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-add-product-material-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProductMaterialLambda/AddProductMaterialLambdaRole/Resource"
+   }
+  },
+  "AddProductMaterialLambdaAddProductMaterialLambdaRoleDefaultPolicyE39FB5C4": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AddProductMaterialLambdaAddProductMaterialLambdaRoleDefaultPolicyE39FB5C4",
+    "Roles": [
+     {
+      "Ref": "AddProductMaterialLambdaAddProductMaterialLambdaRoleE3625DB3"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProductMaterialLambda/AddProductMaterialLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "AddProductMaterialLambdaAddProductMaterialLogGroup9DCC7528": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-add-product-material-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProductMaterialLambda/AddProductMaterialLogGroup/Resource"
+   }
+  },
+  "AddProductMaterialLambdaAddProductMaterialFunctionE04E7E02": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "97bbec4cd7d2f56062e947e01b1298ce26d004efa5b9da2fd48e0c840eedaa7a.zip"
+    },
+    "Description": "Add material information to a product",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-add-product-material-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "AddProductMaterialLambdaAddProductMaterialLogGroup9DCC7528"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "AddProductMaterialLambdaAddProductMaterialLambdaRoleE3625DB3",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "AddProductMaterialLambdaAddProductMaterialLambdaRoleDefaultPolicyE39FB5C4",
+    "AddProductMaterialLambdaAddProductMaterialLambdaRoleE3625DB3"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProductMaterialLambda/AddProductMaterialFunction/Resource",
+    "aws:asset:path": "asset.97bbec4cd7d2f56062e947e01b1298ce26d004efa5b9da2fd48e0c840eedaa7a",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "AddProcessStepLambdaAddProcessStepLambdaRole54A5632E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Add Process Step Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-add-process-step-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::GetAtt": [
+           "ProductTablesProductsTableF1442512",
+           "Arn"
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-add-process-step-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProcessStepLambda/AddProcessStepLambdaRole/Resource"
+   }
+  },
+  "AddProcessStepLambdaAddProcessStepLambdaRoleDefaultPolicyC3469B56": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "AddProcessStepLambdaAddProcessStepLambdaRoleDefaultPolicyC3469B56",
+    "Roles": [
+     {
+      "Ref": "AddProcessStepLambdaAddProcessStepLambdaRole54A5632E"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProcessStepLambda/AddProcessStepLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "AddProcessStepLambdaAddProcessStepLogGroupF068E24B": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-add-process-step-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProcessStepLambda/AddProcessStepLogGroup/Resource"
+   }
+  },
+  "AddProcessStepLambdaAddProcessStepFunction101B0EAF": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "271cfc8cbdd437a8d06ae7a57cad8a53cd0a788524cfcd55aed657f8576473f2.zip"
+    },
+    "Description": "Add a process step to a product",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-add-process-step-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "AddProcessStepLambdaAddProcessStepLogGroupF068E24B"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "AddProcessStepLambdaAddProcessStepLambdaRole54A5632E",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "AddProcessStepLambdaAddProcessStepLambdaRoleDefaultPolicyC3469B56",
+    "AddProcessStepLambdaAddProcessStepLambdaRole54A5632E"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/AddProcessStepLambda/AddProcessStepFunction/Resource",
+    "aws:asset:path": "asset.271cfc8cbdd437a8d06ae7a57cad8a53cd0a788524cfcd55aed657f8576473f2",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CreateBatchLambdaCreateBatchLambdaRoleE6423A6C": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Create Batch Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-create-batch-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:PutItem",
+          "dynamodb:UpdateItem"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::GetAtt": [
+           "ProductTablesProductsTableF1442512",
+           "Arn"
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-create-batch-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CreateBatchLambda/CreateBatchLambdaRole/Resource"
+   }
+  },
+  "CreateBatchLambdaCreateBatchLambdaRoleDefaultPolicy386B7872": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CreateBatchLambdaCreateBatchLambdaRoleDefaultPolicy386B7872",
+    "Roles": [
+     {
+      "Ref": "CreateBatchLambdaCreateBatchLambdaRoleE6423A6C"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CreateBatchLambda/CreateBatchLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreateBatchLambdaCreateBatchLogGroup82898227": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-create-batch-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CreateBatchLambda/CreateBatchLogGroup/Resource"
+   }
+  },
+  "CreateBatchLambdaCreateBatchFunction0FA8AD37": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "63d5474960b269bf0d1a313abec601645b526fe9bbf4a5a4c0ce1645cf490871.zip"
+    },
+    "Description": "Create a batch for a limited batch product",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-create-batch-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "CreateBatchLambdaCreateBatchLogGroup82898227"
+     }
+    },
+    "MemorySize": 256,
+    "Role": {
+     "Fn::GetAtt": [
+      "CreateBatchLambdaCreateBatchLambdaRoleE6423A6C",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 30
+   },
+   "DependsOn": [
+    "CreateBatchLambdaCreateBatchLambdaRoleDefaultPolicy386B7872",
+    "CreateBatchLambdaCreateBatchLambdaRoleE6423A6C"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CreateBatchLambda/CreateBatchFunction/Resource",
+    "aws:asset:path": "asset.63d5474960b269bf0d1a313abec601645b526fe9bbf4a5a4c0ce1645cf490871",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "GenerateCertificateLambdaGenerateCertificateLambdaRole17385E70": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Description": "IAM role for Generate Certificate Lambda",
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::Join": [
+           "",
+           [
+            "arn:aws:logs:",
+            {
+             "Ref": "AWS::Region"
+            },
+            ":",
+            {
+             "Ref": "AWS::AccountId"
+            },
+            ":log-group:/aws/lambda/dev-use1-product-domain-generate-certificate-lambda*"
+           ]
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "CloudWatchLogsAccess"
+     },
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:GetItem",
+          "dynamodb:UpdateItem"
+         ],
+         "Effect": "Allow",
+         "Resource": {
+          "Fn::GetAtt": [
+           "ProductTablesProductsTableF1442512",
+           "Arn"
+          ]
+         }
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": "dev-use1-product-domain-generate-certificate-lambda-role",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/GenerateCertificateLambda/GenerateCertificateLambdaRole/Resource"
+   }
+  },
+  "GenerateCertificateLambdaGenerateCertificateLambdaRoleDefaultPolicy6599A7C4": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:Query",
+        "dynamodb:GetItem",
+        "dynamodb:Scan",
+        "dynamodb:ConditionCheckItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:PutItem",
+        "dynamodb:UpdateItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:DescribeTable"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      },
+      {
+       "Action": [
+        "dynamodb:GetRecords",
+        "dynamodb:GetShardIterator"
+       ],
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::GetAtt": [
+          "ProductTablesProductsTableF1442512",
+          "Arn"
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::GetAtt": [
+             "ProductTablesProductsTableF1442512",
+             "Arn"
+            ]
+           },
+           "/index/*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "GenerateCertificateLambdaGenerateCertificateLambdaRoleDefaultPolicy6599A7C4",
+    "Roles": [
+     {
+      "Ref": "GenerateCertificateLambdaGenerateCertificateLambdaRole17385E70"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/GenerateCertificateLambda/GenerateCertificateLambdaRole/DefaultPolicy/Resource"
+   }
+  },
+  "GenerateCertificateLambdaGenerateCertificateLogGroup53A9D8D7": {
+   "Type": "AWS::Logs::LogGroup",
+   "Properties": {
+    "LogGroupName": "/aws/lambda/dev-use1-product-domain-generate-certificate-lambda",
+    "RetentionInDays": 1,
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/GenerateCertificateLambda/GenerateCertificateLogGroup/Resource"
+   }
+  },
+  "GenerateCertificateLambdaGenerateCertificateFunctionF9DEEAB1": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": "cdk-hnb659fds-assets-567608120268-us-east-1",
+     "S3Key": "a7fc4707b5dd16ecb7f4796d1d50a16b1d2e27bd774c486e9645212de963aa3f.zip"
+    },
+    "Description": "Generate authenticity certificate for a product",
+    "Environment": {
+     "Variables": {
+      "ENVIRONMENT": "dev",
+      "REGION_CODE": "use1",
+      "PRODUCTS_TABLE_NAME": {
+       "Ref": "ProductTablesProductsTableF1442512"
+      },
+      "LOG_LEVEL": "INFO"
+     }
+    },
+    "FunctionName": "dev-use1-product-domain-generate-certificate-lambda",
+    "Handler": "index.handler",
+    "LoggingConfig": {
+     "LogGroup": {
+      "Ref": "GenerateCertificateLambdaGenerateCertificateLogGroup53A9D8D7"
+     }
+    },
+    "MemorySize": 512,
+    "Role": {
+     "Fn::GetAtt": [
+      "GenerateCertificateLambdaGenerateCertificateLambdaRole17385E70",
+      "Arn"
+     ]
+    },
+    "Runtime": "nodejs22.x",
+    "Tags": [
+     {
+      "Key": "Domain",
+      "Value": "product-domain"
+     },
+     {
+      "Key": "Environment",
+      "Value": "dev"
+     },
+     {
+      "Key": "Project",
+      "Value": "hand-made"
+     },
+     {
+      "Key": "Region",
+      "Value": "use1"
+     },
+     {
+      "Key": "StackName",
+      "Value": "dev-use1-hand-made-product-domain-stack"
+     }
+    ],
+    "Timeout": 60
+   },
+   "DependsOn": [
+    "GenerateCertificateLambdaGenerateCertificateLambdaRoleDefaultPolicy6599A7C4",
+    "GenerateCertificateLambdaGenerateCertificateLambdaRole17385E70"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/GenerateCertificateLambda/GenerateCertificateFunction/Resource",
+    "aws:asset:path": "asset.a7fc4707b5dd16ecb7f4796d1d50a16b1d2e27bd774c486e9645212de963aa3f",
+    "aws:asset:is-bundled": true,
+    "aws:asset:property": "Code"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1VSTVPCMBD9Ld5DVHC8Aw5cULF4Z5Y0lEDzYTbBYTr9725SKuX03tuPZN8mYz6evPKnB/jFkShPo1rteLMJIE6MQtumvBjQtqTgN+xqyeZ7k0nLEHWq9MpUa/CgZZA+pf9FyxRQSWG7toxrWytxyWWZtQycw4sRvFl6cIefeupUSmf1tbpXG3GQGtgK9K6ENwiwsdGLfPpAFRJtfe6G6XnLalshb1a2Kmg2E5Q1jMTS2+hSYc/J12QLiDIgnyYgzZtZFCcZZoCSdTS1XFkHN2NDTacF6fbRiHQh5s0G+Q7ioEwee6hpxmxsa2wpj8g/Miyuzdckp6Y+1Gar/QbuHmGY+IzBxcCyG7qvogdj84jB6lvVnVx7e1al9Mlvy9I0/IiP5/ELf6afckSlRj7SCrXkRYd/MgdXqkYCAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "dev-use1-hand-made-product-domain-stack/CDKMetadata/Default"
+   }
+  }
+ },
+ "Parameters": {
+  "ProductAppSyncUserPoolIdParameter96EAE014": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/dev/auth-essentials/cognito/user-pool-id"
+  },
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Outputs": {
+  "ProductAppSyncProductAppSyncApiUrlF282BB34": {
+   "Description": "Product Domain AppSync GraphQL API URL",
+   "Value": {
+    "Fn::GetAtt": [
+     "ProductAppSyncProductAppSyncApiF0916D8C",
+     "GraphQLUrl"
+    ]
+   },
+   "Export": {
+    "Name": "dev-use1-product-domain-api-url"
+   }
+  },
+  "ProductAppSyncProductAppSyncApiIdF3219D4E": {
+   "Description": "Product Domain AppSync GraphQL API ID",
+   "Value": {
+    "Fn::GetAtt": [
+     "ProductAppSyncProductAppSyncApiF0916D8C",
+     "ApiId"
+    ]
+   },
+   "Export": {
+    "Name": "dev-use1-product-domain-api-id"
+   }
+  },
+  "ProductStateMachineProductStateMachineArn554A58AB": {
+   "Description": "Product Domain Step Functions State Machine ARN",
+   "Value": {
+    "Ref": "ProductStateMachine087882B3"
+   },
+   "Export": {
+    "Name": "dev-use1-product-domain-state-machine-arn"
+   }
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

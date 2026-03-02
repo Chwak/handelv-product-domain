@@ -1,0 +1,199 @@
+# Product Domain - Frontend Data Requirements
+
+## Overview
+All data that the Product Domain captures directly from frontend user interactions via the unified Product AppSync GraphQL API.
+
+**Domain:** Product Domain
+**Purpose:** Handmade item products (shelf feature), materials, provenance, raw material inventory (inventory feature), and basement storage
+**API:** Single unified Product AppSync GraphQL API
+**Last Updated:** 2026-01-31
+
+---
+
+## SHELF FEATURE - Products for Sale
+
+### 1. PRODUCT CREATION & MANAGEMENT
+
+### 1.1 Create Product
+**Endpoint**: `POST /products`
+**Source**: Maker dashboard → New product
+
+```typescript
+{
+  title: string,                        // Required, 3-200 chars
+  description: string,                  // Required, 50-5000 chars
+  categoryId: string,                   // Required
+  price: number,                        // Required, in cents
+  quantityAvailable: number,            // Required
+  productType: 'one_of_one' | 'limited_batch' | 'made_to_order',
+  status: 'draft' | 'active',           // Optional, default: 'draft'
+}
+```
+
+**Events Emitted**: `ProductPublished` (if status='active')
+
+### 1.2 Update Product
+**Endpoint**: `PUT /products/{productId}`
+**Source**: Product edit page
+
+```typescript
+{
+  title?: string,
+  description?: string,
+  price?: number,
+  quantityAvailable?: number,
+  status?: 'draft' | 'active' | 'paused',
+}
+```
+
+**Events Emitted**: `ProductUpdated`
+
+### 1.3 Delete Product
+**Endpoint**: `DELETE /products/{productId}`
+**Source**: Product settings
+
+---
+
+## 2. PRODUCT MEDIA
+
+### 2.1 Upload Media
+**Endpoint**: `POST /products/{productId}/media`
+**Source**: Media upload widget
+
+```typescript
+{
+  mediaType: 'image' | 'video',
+  url: string,                          // S3 URL after upload
+  position: number,                     // Display order
+  altText?: string,
+}
+```
+
+### 2.2 Delete Media
+**Endpoint**: `DELETE /products/{productId}/media/{mediaId}`
+**Source**: Media management
+
+---
+
+## API Endpoints Summary (Shelf Feature)
+
+All shelf operations use the Product AppSync GraphQL API:
+
+- `createShelfItem` - Create product
+- `updateShelfItem` - Update product
+- `deleteShelfItem` - Delete product
+- `getShelfItem` - Get product details
+- `listShelfItems` - Get maker's products
+- `addShelfMedia` - Upload media
+- `removeShelfMedia` - Delete media
+- `publishShelfItem` - Publish product
+- `pauseShelfItem` - Pause product
+
+---
+
+## INVENTORY FEATURE - Material Management
+
+---
+
+### 1.1 Add Material
+**GraphQL Mutation**: `addMaterialToInventory`
+
+```typescript
+{
+  materialName: string,
+  materialType: string,
+  currentStock: number,
+  unitOfMeasure: string,
+  reorderThreshold: number,
+  unitCost: number,
+  supplierId?: string,
+}
+```
+
+### 1.2 Update Stock
+**GraphQL Mutation**: `updateMaterialStock`
+
+```typescript
+{
+  quantity: number,
+  movementType: 'purchase' | 'usage' | 'waste' | 'adjustment',
+  notes?: string,
+}
+```
+
+**Events Emitted**: `MaterialStockUpdated`, `LowStockAlert` (if threshold reached)
+
+---
+
+### 2. SUPPLIERS
+
+### 2.1 Add Supplier
+**GraphQL Mutation**: `addSupplier`
+
+```typescript
+{
+  supplierName: string,
+  contactName?: string,
+  email?: string,
+  phone?: string,
+  materialsSupplied: string[],
+}
+```
+
+---
+
+### 3. BASEMENT PRODUCTS
+
+### 3.1 Move Product to Basement
+**GraphQL Mutation**: `moveShelfItemToBasement`
+
+```typescript
+{
+  shelfItemId: string,
+  removalReason: string,
+  notes?: string,
+}
+```
+
+### 3.2 Move Product from Basement to Shelf
+**GraphQL Mutation**: `moveBasementItemToShelf`
+
+```typescript
+{
+  basementItemId: string,
+}
+```
+
+**Events Emitted**: `ProductMovedToShelf`
+
+---
+
+## API Endpoints Summary (Inventory Feature)
+
+All inventory operations use the Product AppSync GraphQL API:
+
+- `addMaterialToInventory` - Add material
+- `listMaterialInventory` - List materials
+- `updateMaterialStock` - Update stock
+- `getLowStockMaterials` - Get low stock materials
+- `recordStockMovement` - Record material movement
+- `addSupplier` - Add supplier
+- `listSuppliers` - List suppliers
+- `updateSupplier` - Update supplier
+- `moveShelfItemToBasement` - Archive product
+- `moveBasementItemToShelf` - Republish product
+- `listBasementProducts` - List archived products
+
+---
+
+## Unified Product AppSync API
+
+All shelf and inventory operations use a single unified GraphQL API:
+- **API Name**: `product-appsync`
+- **Schema**: Merged shelf + inventory types
+- **SSM Parameter**: `/product-domain/appsync/api-url`
+- **Authentication**: Cognito User Pool + IAM
+
+---
+
+**Note:** See `inter-domain-data-requirements.txt` for events consumed/emitted.

@@ -1,0 +1,519 @@
+# Product Onboarding Flow
+## Product Domain (Shelf Feature) - Maker Studio Feature
+
+**Purpose:** Enable makers to easily create and publish products to their shelf with a simple, clear, and productive flow - no fuss.
+
+**Domain Context:** This flow is part of the unified Product Domain, which includes both shelf (products for sale) and inventory (materials/basement) features accessed via a single Product AppSync GraphQL API.
+
+---
+
+## Flow Overview
+
+**Goal:** Get makers from "I want to sell something" to "Product live on shelf" in 3-5 minutes
+
+**Philosophy:**
+- Start simple, add details later
+- Progressive disclosure - show advanced options only when needed
+- Smart defaults - pre-fill what we can
+- Clear progress - makers always know where they are
+- Save drafts automatically - never lose work
+
+---
+
+## Step 1: Product Basics (30 seconds)
+**Goal:** Capture essential info to create draft product
+
+### Required Fields:
+- **Product Name** (text, 3-100 chars)
+  - Placeholder: "Handcrafted Oak Coffee Table"
+  - Auto-save on blur
+  
+- **Product Type** (radio buttons, visual icons)
+  - `one_of_one` → "One-of-a-kind item" (unique piece)
+  - `limited_batch` → "Limited edition" (e.g., 10 units)
+  - `made_to_order` → "Made to order" (custom, unlimited)
+  
+- **Price** (number input with currency)
+  - Format: $XXX.XX
+  - Min: $1.00
+  - Auto-format on blur
+
+### Optional (Collapsible "More Details"):
+- **Short Description** (textarea, 10-500 chars)
+  - Placeholder: "A beautiful solid oak table, hand-finished with natural oils..."
+  - Character counter
+  
+### UX Notes:
+- Save draft on field blur (auto-save)
+- Show "Draft saved" toast notification
+- "Continue" button always visible at bottom
+- Can skip description and add later
+
+### Data Created:
+```json
+{
+  "shelf_item_id": "generated-uuid",
+  "maker_user_id": "from-session",
+  "product_name": "user-input",
+  "product_type": "user-selection",
+  "price": "user-input",
+  "description": "optional-user-input",
+  "status": "DRAFT",
+  "created_at": "timestamp"
+}
+```
+
+---
+
+## Step 2: Add Images (1 minute)
+**Goal:** Upload at least one product image (required for publishing)
+
+### Interface:
+- **Drag & Drop Zone** (primary upload method)
+  - Large, prominent area
+  - "Drag photos here or click to browse"
+  - Show file type and size limits: "JPG, PNG, max 5MB each"
+  
+- **Image Grid** (shows uploaded images)
+  - First image = primary (marked with badge)
+  - Drag to reorder
+  - Delete button on hover
+  - Max 10 images
+
+### Validation:
+- At least 1 image required for publish (not for draft)
+- File type: JPG, PNG, WEBP
+- File size: max 5MB per image
+- Image resolution: min 800x600px
+
+### UX Notes:
+- Upload to S3 immediately on selection
+- Show upload progress bar
+- "Skip for now" button if still in draft mode
+- "Continue" button enabled after first image uploads
+- Can return to add more images later
+
+### Data Created:
+```json
+{
+  "shelf_media_id": "generated-uuid",
+  "shelf_item_id": "from-step-1",
+  "media_type": "image",
+  "media_url": "s3-url",
+  "is_primary": true/false,
+  "display_order": 0,
+  "created_at": "timestamp"
+}
+```
+
+---
+
+## Step 3: Materials & Story (Optional, 1-2 minutes)
+**Goal:** Add transparency and storytelling (improves discovery ranking)
+
+### Materials Section (Optional but Recommended):
+- **Add Material** button opens modal/expandable
+- Fields per material:
+  - Material name: "Reclaimed Oak", "Organic Cotton", etc.
+  - Source type (dropdown): 
+    - Locally sourced
+    - Upcycled
+    - Sustainable/certified
+    - Imported
+  - Certification (optional): FSC, Organic, Fair Trade, etc.
+
+### Process Steps (Optional):
+- **Add Process Step** button
+- Each step has:
+  - Step name: "Wood selection", "Hand-sanding", etc.
+  - Description (optional)
+  - Duration estimate (optional): "2-3 hours"
+  - Image (optional)
+
+### UX Notes:
+- Collapsible sections - hidden by default
+- "Why add materials?" info tooltip
+  - "Helps collectors understand your craft"
+  - "Improves your product's visibility"
+  - "Builds trust through transparency"
+- "Skip" button prominent
+- Auto-save as they add items
+
+### Data Created:
+```json
+// Materials
+{
+  "shelf_material_id": "generated-uuid",
+  "shelf_item_id": "from-step-1",
+  "material_name": "user-input",
+  "source_type": "user-selection",
+  "certification": "optional-user-input"
+}
+
+// Process Steps
+{
+  "process_step_id": "generated-uuid",
+  "shelf_item_id": "from-step-1",
+  "step_name": "user-input",
+  "description": "optional-user-input",
+  "duration_hours": "optional-user-input",
+  "step_order": 0
+}
+```
+
+---
+
+## Step 4: Inventory & Availability (30 seconds)
+**Goal:** Set quantity and batch info (if applicable)
+
+### For `one_of_one`:
+- No quantity needed (default: 1)
+- Just confirm: "This is a unique piece"
+
+### For `limited_batch`:
+- **Quantity Available** (number input)
+  - Label: "How many will you make?"
+  - Min: 1, Max: 9999
+  - Creates batch record
+  
+- **Batch Info** (optional):
+  - Batch name/number: "Spring 2026 Collection"
+  - Production notes
+
+### For `made_to_order`:
+- **Lead Time** (number + unit)
+  - "How long to make?" 
+  - Input: number + dropdown (days/weeks/months)
+  - Example: "2-3 weeks"
+  
+- **Order Capacity** (optional)
+  - Max orders per month: number input
+  - Leave blank for unlimited
+
+### UX Notes:
+- Smart defaults based on product type
+- Clear help text for each field
+- "Skip" button for made-to-order (can set later)
+- Auto-save on change
+
+### Data Created:
+```json
+// For limited_batch
+{
+  "batch_id": "generated-uuid",
+  "shelf_item_id": "from-step-1",
+  "total_quantity": "user-input",
+  "remaining_quantity": "same-as-total",
+  "batch_name": "optional-user-input"
+}
+
+// For made_to_order
+{
+  "lead_time_days": "calculated-from-user-input",
+  "max_orders_per_month": "optional-user-input"
+}
+```
+
+---
+
+## Step 5: Category & Tags (30 seconds)
+**Goal:** Help collectors discover the product
+
+### Category (Required):
+- **Dropdown/Select** with popular categories
+- Examples:
+  - Furniture
+  - Jewelry
+  - Home Decor
+  - Clothing & Accessories
+  - Art
+  - etc.
+- Searchable dropdown for many categories
+
+### Tags (Optional, max 10):
+- **Tag Input** (type + enter)
+- Suggestions based on:
+  - Popular tags in category
+  - Materials mentioned
+  - Product name keywords
+- Examples: "rustic", "modern", "eco-friendly", "handcarved"
+
+### UX Notes:
+- Category required (can't skip)
+- Tags optional but recommended
+- Show "Popular in [category]" tag suggestions
+- Auto-complete as they type
+- Click suggestions to add quickly
+
+### Data Updated:
+```json
+{
+  "category_id": "user-selection",
+  "tags": ["user-input", "array", "of", "strings"]
+}
+```
+
+---
+
+## Step 6: Review & Publish (1 minute)
+**Goal:** Review everything before going live
+
+### Review Screen:
+- **Product Preview** (as collectors will see it)
+  - Images carousel
+  - Name, price, description
+  - Materials and process (if added)
+  - "View as collector" link
+  
+- **Publishing Checklist** (auto-checked):
+  - ✅ At least one image uploaded
+  - ✅ Price set
+  - ✅ Category selected
+  - ✅ Maker verified (from Verification Trust Domain)
+  - ⚠️ No description yet (warning, not blocker)
+  - ⚠️ No materials added (warning, not blocker)
+
+### Actions:
+- **"Publish to Shelf"** button (primary, large)
+  - Disabled if checklist has errors
+  - Shows what's missing if disabled
+  
+- **"Save as Draft"** button (secondary)
+  - Always available
+  - Returns to dashboard
+  
+- **"Back"** button (tertiary)
+  - Returns to previous step to edit
+
+### On Publish Success:
+- Status → `PUBLISHED`
+- Event published: `ShelfItemPublished`
+- Product quantity tracking initialized by inventory feature
+- Redirect to:
+  - Product detail page in maker studio
+  - Success toast: "Your product is now live! 🎉"
+  - Quick actions:
+    - Share on social
+    - View on shop
+    - Add another product
+
+### Data Updated:
+```json
+{
+  "status": "PUBLISHED",
+  "published_at": "timestamp"
+}
+```
+
+---
+
+## Smart Features
+
+### Auto-Save (Throughout):
+- Save draft on blur/change for all fields
+- "Saving..." indicator
+- "Draft saved" toast notification
+- Never lose work
+
+### Progress Indicator:
+- Show steps 1-6 at top
+- Current step highlighted
+- Completed steps show checkmark  
+- Can click completed steps to go back
+
+### Mobile Responsive:
+- One column layout on mobile
+- Large tap targets
+- Bottom sheet for modals
+- Fixed "Continue" button at bottom
+
+### Validation:
+- Inline validation as they type
+- Clear error messages
+- Can't proceed if errors in current step
+- Can save draft with warnings (not errors)
+
+### Pre-fill Smart Defaults:
+- Currency from maker profile/location
+- Category from previous products
+- Tags suggestions from similar products
+- Lead time from previous made-to-order products
+
+---
+
+## Advanced Features (Collapsed by Default)
+
+### Available in Each Step:
+- **SEO Settings** (Step 1)
+  - Custom URL slug
+  - Meta description
+  
+- **Shipping** (Step 4)
+  - Dimensions and weight
+  - Shipping options
+  - Free shipping toggle
+  
+- **Custom Fields** (Any step)
+  - Add custom product attributes
+  - Example: "Wood finish: Natural/Stained"
+
+---
+
+## Post-Publish Actions
+
+### Available After Publishing:
+- **Edit Product** → Returns to onboarding flow (edit mode)
+- **Pause Product** → Set status to `PAUSED` (temporary removal)
+- **Unpublish → Move to Basement** → Move to basement storage (inventory feature)
+- **Duplicate Product** → Creates new draft with same details
+- **View Analytics** → Link to product performance
+
+---
+
+## Integration Points
+
+### With Other Domains:
+1. **Verification Trust Domain**
+   - Check maker verification before allowing publish
+   - Show verification status in review step
+   
+2. **Inventory Feature (Internal)**
+   - Initialize product quantity tracking on publish
+   - Move to basement on unpublish
+   - Sync quantity changes
+   
+3. **Discovery Domain**
+   - Index product for search immediately on publish
+   - Use tags and materials for ranking
+   
+4. **Notification Domain**
+   - Notify followers of new product
+   - Send to maker on successful publish
+
+---
+
+## Error Handling
+
+### Common Errors:
+- **Maker not verified** → Show verification CTA, can't publish
+- **No images** → Show error in review step, can't publish
+- **Image upload fails** → Show retry button, keep form data
+- **Network error on save** → Retry automatically, show "Saving failed" toast
+- **Product name taken** → Suggest alternatives (append number/date)
+
+### Draft Recovery:
+- Auto-save every change
+- If page closes, resume from last saved draft
+- "Resume where you left off" banner on return
+
+---
+
+## Success Metrics
+
+### Track:
+- Time to complete onboarding (target: <5 min)
+- Draft abandonment rate (target: <30%)
+- Publish completion rate (target: >70%)
+- Step where users drop off most
+- Materials/process adoption rate
+- Images per product (target: 3+)
+
+---
+
+## Technical Implementation
+
+### GraphQL Mutations:
+```graphql
+# Step 1
+mutation CreateDraftProduct($input: CreateDraftProductInput!) {
+  createDraftProduct(input: $input) {
+    shelfItemId
+    status
+  }
+}
+
+# Step 2
+mutation AddShelfMedia($input: AddShelfMediaInput!) {
+  addShelfMedia(input: $input) {
+    shelfMediaId
+    mediaUrl
+  }
+}
+
+# Step 3
+mutation AddShelfMaterial($input: AddShelfMaterialInput!) {
+  addShelfMaterial(input: $input) {
+    shelfMaterialId
+  }
+}
+
+mutation AddProcessStep($input: AddProcessStepInput!) {
+  addProcessStep(input: $input) {
+    processStepId
+  }
+}
+
+# Step 4
+mutation SetProductInventory($input: SetProductInventoryInput!) {
+  setProductInventory(input: $input) {
+    shelfItemId
+    quantity
+  }
+}
+
+# Step 5
+mutation UpdateProductCategory($input: UpdateProductCategoryInput!) {
+  updateProductCategory(input: $input) {
+    shelfItemId
+    categoryId
+  }
+}
+
+# Step 6
+mutation PublishProduct($shelfItemId: ID!) {
+  publishProduct(shelfItemId: $shelfItemId) {
+    shelfItemId
+    status
+    publishedAt
+  }
+}
+```
+
+### Frontend State Management:
+- Use form state library (React Hook Form, Formik)
+- Debounce auto-save (500ms)
+- Optimistic UI updates
+- Local storage backup for drafts
+
+### Unified Product AppSync API:
+- All mutations use the single Product AppSync GraphQL API
+- SSM Parameter: `/product-domain/appsync/api-url`
+- Authentication: Cognito User Pool + IAM
+
+---
+
+## Future Enhancements (v2)
+
+1. **AI-Powered Descriptions**
+   - Generate description from images
+   - Suggest tags from image analysis
+   
+2. **Templates**
+   - Save product as template
+   - Quick create from template
+   
+3. **Bulk Upload**
+   - CSV import for multiple products
+   - Copy from existing platform
+   
+4. **Video Support**
+   - Add product videos
+   - Process step videos
+   
+5. **3D/AR Preview**
+   - 3D model upload
+   - AR view for collectors
+
+---
+
+**END OF PRODUCT ONBOARDING FLOW**

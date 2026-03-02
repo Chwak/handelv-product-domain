@@ -1,0 +1,301 @@
+# Product Domain - Inter-Domain Data Requirements
+
+## Overview
+All data that the Product Domain consumes from other domains via events and provides to other domains.
+
+**Domain:** Product Domain (unified shelf + inventory features)
+**API:** Single unified Product AppSync GraphQL API
+**Last Updated:** 2026-01-31
+
+---
+
+## 1. EVENTS CONSUMED
+
+### Shelf Feature - Events Consumed
+
+#### 1.1 From Order Domain
+**Event**: `OrderCreated`
+
+```typescript
+{
+  event: "OrderCreated",
+  orderId: string,
+  productId: string,
+  quantity: number,
+}
+```
+
+**Action**: Decrement `quantityAvailable`. If 0, update status to 'sold_out'
+
+### 1.2 From Order Domain
+**Event**: `OrderCanceled`
+
+```typescript
+{
+  event: "OrderCanceled",
+  orderId: string,
+  productId: string,
+  quantity: number,
+}
+```
+
+**Action**: Increment `quantityAvailable`
+
+#### 1.3 From Maker Domain
+**Event**: `MakerVerified`
+
+```typescript
+{
+  event: "MakerVerified",
+  makerUserId: string,
+  verifiedAt: string,
+}
+```
+
+**Action**: Enable publishing for verified maker
+
+---
+
+### Inventory Feature - Events Consumed
+
+#### 1.4 From Order Domain
+**Event**: `OrderCompleted`
+
+```typescript
+{
+  event: "OrderCompleted",
+  orderId: string,
+  shelfItemId: string,
+  makerUserId: string,
+}
+```
+
+**Action**: Suggest recording material usage for this order (optional)
+
+#### 1.5 From Payment Domain
+**Event**: `MaterialPurchasePaid`
+
+```typescript
+{
+  event: "MaterialPurchasePaid",
+  makerUserId: string,
+  materialId: string,
+  quantity: number,
+  totalCost: number,
+  paidAt: string,
+}
+```
+
+**Action**: Record stock purchase and update material inventory
+
+---
+
+## 2. EVENTS EMITTED
+
+### Shelf Feature - Events Emitted
+
+#### 2.1 `ShelfItemPublished`
+**Consumers**: Discovery, Notification, Maker, Collector
+
+#### 2.1 `ShelfItemPublished`
+**Consumers**: Discovery, Notification, Collector
+
+```typescript
+{
+  event: "ShelfItemPublished",
+  shelfItemId: string,
+  makerUserId: string,
+  categoryId: string,
+  price: number,
+  publishedAt: string,
+}
+```
+
+#### 2.2 `ShelfItemUpdated`
+**Consumers**: Discovery
+
+```typescript
+{
+  event: "ShelfItemUpdated",
+  shelfItemId: string,
+  updatedFields: string[],
+  updatedAt: string,
+}
+```
+
+#### 2.3 `ShelfItemSoldOut`
+**Consumers**: Maker, Discovery
+
+```typescript
+{
+  event: "ShelfItemSoldOut",
+  shelfItemId: string,
+  makerUserId: string,
+  soldOutAt: string,
+}
+```
+
+#### 2.4 `ShelfItemPaused`
+**Consumers**: Discovery, Order
+
+```typescript
+{
+  event: "ShelfItemPaused",
+  shelfItemId: string,
+  pausedAt: string,
+}
+```
+
+#### 2.5 `ShelfMediaAdded`
+**Consumers**: Discovery
+
+```typescript
+{
+  event: "ShelfMediaAdded",
+  shelfItemId: string,
+  mediaId: string,
+  mediaType: string,
+  addedAt: string,
+}
+```
+
+---
+
+### Inventory Feature - Events Emitted
+
+#### 2.6 `LowStockAlert`
+**Consumers**: Notification
+
+```typescript
+{
+  event: "LowStockAlert",
+  makerUserId: string,
+  materialId: string,
+  materialName: string,
+  currentStock: number,
+  reorderThreshold: number,
+  alertedAt: string,
+}
+```
+
+#### 2.7 `MaterialPurchased`
+**Consumers**: Analytics
+
+```typescript
+{
+  event: "MaterialPurchased",
+  makerUserId: string,
+  materialId: string,
+  quantity: number,
+  totalCost: number,
+  supplierId?: string,
+  purchasedAt: string,
+}
+```
+
+#### 2.8 `MaterialStockUpdated`
+**Consumers**: Analytics
+
+```typescript
+{
+  event: "MaterialStockUpdated",
+  makerUserId: string,
+  materialId: string,
+  previousStock: number,
+  newStock: number,
+  updatedAt: string,
+}
+```
+
+#### 2.9 `ProductMovedToBasement`
+**Consumers**: Analytics, Notification
+
+```typescript
+{
+  event: "ProductMovedToBasement",
+  basementItemId: string,
+  makerUserId: string,
+  originalShelfItemId: string,
+  removalReason: string,
+  movedAt: string,
+}
+```
+
+#### 2.10 `ProductMovedToShelf`
+**Consumers**: Discovery, Analytics, Notification
+
+```typescript
+{
+  event: "ProductMovedToShelf",
+  shelfItemId: string,
+  makerUserId: string,
+  previousBasementItemId: string,
+  movedAt: string,
+}
+```
+
+---
+
+## DEPENDENCY MAP
+
+```
+Product Domain (Unified):
+├── Consumes From:
+│   ├── Order Domain
+│   │   ├── OrderCreated → Shelf (update availability)
+│   │   ├── OrderCanceled → Shelf (restore availability)
+│   │   └── OrderCompleted → Inventory (track material usage)
+│   ├── Maker Domain
+│   │   └── MakerVerified → Shelf (enable publishing)
+│   └── Payment Domain
+│       └── MaterialPurchasePaid → Inventory (record purchases)
+└── Provides To:
+    ├── Discovery Domain
+    │   ├── ShelfItemPublished
+    │   ├── ShelfItemUpdated
+    │   ├── ShelfMediaAdded
+    │   ├── MaterialStockUpdated
+    │   └── ProductMovedToShelf
+    ├── Notification Domain
+    │   ├── ShelfItemPublished
+    │   ├── LowStockAlert
+    │   ├── ProductMovedToBasement
+    │   └── ProductMovedToShelf
+    ├── Collector Domain
+    │   └── ShelfItemPublished
+    ├── Order Domain
+    │   ├── ShelfItemPublished
+    │   ├── ShelfItemUpdated
+    │   └── ShelfItemPaused
+    ├── Maker Domain
+    │   └── ShelfItemSoldOut
+    └── Analytics Domain
+        ├── MaterialPurchased
+        ├── MaterialStockUpdated
+        ├── ProductMovedToBasement
+        └── ProductMovedToShelf
+```
+
+---
+
+## Integration Architecture
+
+**Single Unified Product AppSync API:**
+- Merged schema with shelf + inventory types
+- All shelf and inventory queries/mutations/subscriptions in one API
+- SSM Parameter: `/product-domain/appsync/api-url`
+- Event-driven communication via EventBridge
+
+**Internal Coordination:**
+- Shelf and inventory features coordinate internally for:
+  - Basement storage (unpublished products)
+  - Product quantity tracking
+  - Material usage linked to products
+
+**Cross-Domain Imports:**
+- Imports `maker_profiles` table (read-only) via SSM from Maker Domain
+- Does NOT directly write to other domain databases
+
+---
+
+**Note:** See `frontend-data-requirements.txt` for data from user interactions via GraphQL API.

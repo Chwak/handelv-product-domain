@@ -1,0 +1,1391 @@
+{
+  "version": "48.0.0",
+  "artifacts": {
+    "dev-use1-hand-made-product-domain-stack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "dev-use1-hand-made-product-domain-stack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "dev-use1-hand-made-product-domain-stack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://567608120268/us-east-1",
+      "properties": {
+        "templateFile": "dev-use1-hand-made-product-domain-stack.template.json",
+        "terminationProtection": false,
+        "tags": {
+          "Domain": "product-domain",
+          "Environment": "dev",
+          "Project": "hand-made",
+          "Region": "use1",
+          "StackName": "dev-use1-hand-made-product-domain-stack"
+        },
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::567608120268:role/cdk-hnb659fds-deploy-role-567608120268-us-east-1",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::567608120268:role/cdk-hnb659fds-cfn-exec-role-567608120268-us-east-1",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-567608120268-us-east-1/98431305342879919e8eecdda12bcf8cef0128881bc9495d2f5cd8a90510a29a.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "dev-use1-hand-made-product-domain-stack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::567608120268:role/cdk-hnb659fds-lookup-role-567608120268-us-east-1",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "dev-use1-hand-made-product-domain-stack.assets"
+      ],
+      "metadata": {
+        "/dev-use1-hand-made-product-domain-stack": [
+          {
+            "type": "aws:cdk:stack-tags",
+            "data": [
+              {
+                "Key": "Domain",
+                "Value": "product-domain"
+              },
+              {
+                "Key": "Environment",
+                "Value": "dev"
+              },
+              {
+                "Key": "Project",
+                "Value": "hand-made"
+              },
+              {
+                "Key": "Region",
+                "Value": "use1"
+              },
+              {
+                "Key": "StackName",
+                "Value": "dev-use1-hand-made-product-domain-stack"
+              }
+            ]
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/MaterialInventoryTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "InventoryTablesMaterialInventoryTable4A548EF3"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/MaterialInventoryTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "InventoryTablesMaterialInventoryTable4A548EF3"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/StockMovementsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "InventoryTablesStockMovementsTable1E2C0AB4"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/StockMovementsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "InventoryTablesStockMovementsTable1E2C0AB4"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/SuppliersTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "InventoryTablesSuppliersTable24826FDE"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/SuppliersTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "InventoryTablesSuppliersTable24826FDE"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/BasementProductsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "InventoryTablesBasementProductsTable174B9403"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/BasementProductsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "InventoryTablesBasementProductsTable174B9403"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/ProductQuantitiesTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "InventoryTablesProductQuantitiesTable7B576FF5"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/InventoryTables/ProductQuantitiesTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "InventoryTablesProductQuantitiesTable7B576FF5"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/MaterialInventoryTableNameParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "MaterialInventoryTableNameParameterA5F4EB64"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/StockMovementsTableNameParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "StockMovementsTableNameParameterE6383638"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/SuppliersTableNameParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "SuppliersTableNameParameter41EA4475"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/BasementProductsTableNameParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BasementProductsTableNameParameter74791D68"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductQuantitiesTableNameParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductQuantitiesTableNameParameter67FDF906"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/UserPoolId.Parameter": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncUserPoolIdParameter96EAE014"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ApiLogsRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncApiLogsRole495C8ACB"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiF0916D8C"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/Schema": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiSchema61AB305D"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/LogRetention/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiLogRetentionF1640BA8"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PublishProductDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiPublishProductDataSourceServiceRole8A443F45"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PublishProductDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiPublishProductDataSourceServiceRoleDefaultPolicy692F44D9"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PublishProductDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiPublishProductDataSourceBEAC4903"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PublishProductResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiPublishProductResolverAD8CDC18"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateProductDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiCreateProductDataSourceServiceRoleEC81CD18"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateProductDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiCreateProductDataSourceServiceRoleDefaultPolicy245E4E6E"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateProductDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiCreateProductDataSourceD0BBDD5E"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateProductResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiCreateProductResolver10252238"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/UpdateProductDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiUpdateProductDataSourceServiceRoleF05C85E7"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/UpdateProductDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiUpdateProductDataSourceServiceRoleDefaultPolicyE1B2B15D"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/UpdateProductDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiUpdateProductDataSource77376D41"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/UpdateProductResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiUpdateProductResolver25A9ED15"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PauseProductDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiPauseProductDataSourceServiceRole4443EF87"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PauseProductDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiPauseProductDataSourceServiceRoleDefaultPolicy2D1C18DD"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PauseProductDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiPauseProductDataSourceA8E39F82"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/PauseProductResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiPauseProductResolver32C9FF97"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GetProductDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiGetProductDataSourceServiceRoleB3283FB1"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GetProductDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiGetProductDataSourceServiceRoleDefaultPolicy1BD86D03"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GetProductDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiGetProductDataSource2E80A0FD"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GetProductResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiGetProductResolver076CA7E4"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/ListProductsDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiListProductsDataSourceServiceRole3656105A"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/ListProductsDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiListProductsDataSourceServiceRoleDefaultPolicyF218247F"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/ListProductsDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiListProductsDataSource129F5479"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/ListProductsResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiListProductsResolverE1222265"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMediaDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProductMediaDataSourceServiceRole2AAA5ECE"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMediaDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProductMediaDataSourceServiceRoleDefaultPolicy3A55439E"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMediaDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProductMediaDataSource5392B88B"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMediaResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProductMediaResolverCA16A724"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMaterialDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProductMaterialDataSourceServiceRole93726718"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMaterialDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProductMaterialDataSourceServiceRoleDefaultPolicyF88FAD10"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMaterialDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProductMaterialDataSource5FF73DFE"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProductMaterialResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProductMaterialResolver5C1BA82B"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProcessStepDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceServiceRole71C7B128"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProcessStepDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceServiceRoleDefaultPolicyF61F73FD"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProcessStepDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProcessStepDataSourceA65905D5"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/AddProcessStepResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiAddProcessStepResolver607D8FB7"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateBatchDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiCreateBatchDataSourceServiceRole82510429"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateBatchDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiCreateBatchDataSourceServiceRoleDefaultPolicy1C73F1CC"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateBatchDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiCreateBatchDataSourceFAA7ACDD"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/CreateBatchResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiCreateBatchResolverF9D23663"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GenerateCertificateDataSource/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceServiceRoleDC44D6AC"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GenerateCertificateDataSource/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceServiceRoleDefaultPolicy45258D54"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GenerateCertificateDataSource/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiGenerateCertificateDataSourceCFD01703"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApi/GenerateCertificateResolver/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiGenerateCertificateResolver16A0F36B"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ApiLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncApiLogGroup16047D2A"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApiUrlParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiUrlParameterBF3D8153"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApiIdParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiIdParameter8A27D1B0"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiUrlF282BB34"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductAppSync/ProductAppSyncApiId": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductAppSyncProductAppSyncApiIdF3219D4E"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRole9741ECFB"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aServiceRoleDefaultPolicyADDA7DEB"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8a/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "LogRetentionaae0aa3c5b4d4f87b02d85b201efdd8aFD4BFC8A"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductMediaBuckets/ProductMediaBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductMediaBucketsProductMediaBucket71492FF3"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductMediaBuckets/ProductMediaBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductMediaBucketsProductMediaBucketPolicyA4264E6D"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductMediaBuckets/ProductMediaBucket/AutoDeleteObjectsCustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductMediaBucketsProductMediaBucketAutoDeleteObjectsCustomResource93C16E68"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/Custom::S3AutoDeleteObjectsCustomResourceProvider": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-customResourceProvider",
+            "data": true
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Role": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderRole3B1BD092"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/Custom::S3AutoDeleteObjectsCustomResourceProvider/Handler": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomS3AutoDeleteObjectsCustomResourceProviderHandler9D90184F"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTablesProductsTableF1442512"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTablesProductsTableF1442512"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductMediaTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTablesProductMediaTable0DB14C82"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductMediaTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTablesProductMediaTable0DB14C82"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductMaterialsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTablesProductMaterialsTableC781ABD7"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductMaterialsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTablesProductMaterialsTableC781ABD7"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductProcessStepsTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTablesProductProcessStepsTable62234030"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductProcessStepsTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTablesProductProcessStepsTable62234030"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductBatchesTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTablesProductBatchesTable72C0D113"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductBatchesTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTablesProductBatchesTable72C0D113"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductCertificatesTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTablesProductCertificatesTable3C9CD20A"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/ProductCertificatesTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTablesProductCertificatesTable3C9CD20A"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/CategoriesTable": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "ProductTablesCategoriesTableC70AD82A"
+            }
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductTables/CategoriesTable/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductTablesCategoriesTableC70AD82A"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachineLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductStateMachineProductStateMachineLogGroup796393B1"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachine/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductStateMachineRole802A21C7"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachine/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductStateMachineRoleDefaultPolicy7E7B5C80"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachine/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductStateMachine087882B3"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachineArnParameter/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductStateMachineProductStateMachineArnParameter0DC28DA8"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ProductStateMachine/ProductStateMachineArn": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ProductStateMachineProductStateMachineArn554A58AB"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/PublishProductLambda/PublishProductLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PublishProductLambdaPublishProductLambdaRole42C9006C"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/PublishProductLambda/PublishProductLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PublishProductLambdaPublishProductLogGroup64A5FFBE"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/PublishProductLambda/PublishProductFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PublishProductLambdaPublishProductFunction270D5D73"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CreateProductLambda/CreateProductLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateProductLambdaCreateProductLambdaRole99AF6129"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CreateProductLambda/CreateProductLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateProductLambdaCreateProductLambdaRoleDefaultPolicyDBA4A5ED"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CreateProductLambda/CreateProductLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateProductLambdaCreateProductLogGroupAB6CCCA4"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CreateProductLambda/CreateProductFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateProductLambdaCreateProductFunction760FBC67"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/UpdateProductLambda/UpdateProductLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateProductLambdaUpdateProductLambdaRole2C156BB8"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/UpdateProductLambda/UpdateProductLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateProductLambdaUpdateProductLambdaRoleDefaultPolicy4140EDFE"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/UpdateProductLambda/UpdateProductLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateProductLambdaUpdateProductLogGroupF7EBA2A6"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/UpdateProductLambda/UpdateProductFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "UpdateProductLambdaUpdateProductFunctionF67ACBAC"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/PauseProductLambda/PauseProductLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PauseProductLambdaPauseProductLambdaRole77847903"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/PauseProductLambda/PauseProductLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PauseProductLambdaPauseProductLambdaRoleDefaultPolicyB7DB481B"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/PauseProductLambda/PauseProductLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PauseProductLambdaPauseProductLogGroup10093C09"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/PauseProductLambda/PauseProductFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "PauseProductLambdaPauseProductFunction3556CA18"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/GetProductLambda/GetProductLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetProductLambdaGetProductLambdaRole0C315FCF"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/GetProductLambda/GetProductLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetProductLambdaGetProductLambdaRoleDefaultPolicy1034D16A"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/GetProductLambda/GetProductLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetProductLambdaGetProductLogGroupBE884500"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/GetProductLambda/GetProductFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GetProductLambdaGetProductFunction780AB06E"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ListProductsLambda/ListProductsLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListProductsLambdaListProductsLambdaRoleC852C30E"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ListProductsLambda/ListProductsLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListProductsLambdaListProductsLambdaRoleDefaultPolicyB6E04830"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ListProductsLambda/ListProductsLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListProductsLambdaListProductsLogGroupC3C76A49"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/ListProductsLambda/ListProductsFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ListProductsLambdaListProductsFunction8621D139"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProductMediaLambda/AddProductMediaLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProductMediaLambdaAddProductMediaLambdaRoleF5536B33"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProductMediaLambda/AddProductMediaLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProductMediaLambdaAddProductMediaLambdaRoleDefaultPolicyA516E7A4"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProductMediaLambda/AddProductMediaLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProductMediaLambdaAddProductMediaLogGroup032B8487"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProductMediaLambda/AddProductMediaFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProductMediaLambdaAddProductMediaFunction004FF48C"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProductMaterialLambda/AddProductMaterialLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProductMaterialLambdaAddProductMaterialLambdaRoleE3625DB3"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProductMaterialLambda/AddProductMaterialLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProductMaterialLambdaAddProductMaterialLambdaRoleDefaultPolicyE39FB5C4"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProductMaterialLambda/AddProductMaterialLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProductMaterialLambdaAddProductMaterialLogGroup9DCC7528"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProductMaterialLambda/AddProductMaterialFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProductMaterialLambdaAddProductMaterialFunctionE04E7E02"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProcessStepLambda/AddProcessStepLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProcessStepLambdaAddProcessStepLambdaRole54A5632E"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProcessStepLambda/AddProcessStepLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProcessStepLambdaAddProcessStepLambdaRoleDefaultPolicyC3469B56"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProcessStepLambda/AddProcessStepLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProcessStepLambdaAddProcessStepLogGroupF068E24B"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/AddProcessStepLambda/AddProcessStepFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "AddProcessStepLambdaAddProcessStepFunction101B0EAF"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CreateBatchLambda/CreateBatchLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateBatchLambdaCreateBatchLambdaRoleE6423A6C"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CreateBatchLambda/CreateBatchLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateBatchLambdaCreateBatchLambdaRoleDefaultPolicy386B7872"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CreateBatchLambda/CreateBatchLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateBatchLambdaCreateBatchLogGroup82898227"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CreateBatchLambda/CreateBatchFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CreateBatchLambdaCreateBatchFunction0FA8AD37"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/GenerateCertificateLambda/GenerateCertificateLambdaRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GenerateCertificateLambdaGenerateCertificateLambdaRole17385E70"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/GenerateCertificateLambda/GenerateCertificateLambdaRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GenerateCertificateLambdaGenerateCertificateLambdaRoleDefaultPolicy6599A7C4"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/GenerateCertificateLambda/GenerateCertificateLogGroup/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GenerateCertificateLambdaGenerateCertificateLogGroup53A9D8D7"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/GenerateCertificateLambda/GenerateCertificateFunction/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "GenerateCertificateLambdaGenerateCertificateFunctionF9DEEAB1"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/dev-use1-hand-made-product-domain-stack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "dev-use1-hand-made-product-domain-stack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "aws-cdk-lib/feature-flag-report": {
+      "type": "cdk:feature-flag-report",
+      "properties": {
+        "module": "aws-cdk-lib",
+        "flags": {
+          "@aws-cdk/aws-signer:signingProfileNamePassedToCfn": {
+            "recommendedValue": true,
+            "explanation": "Pass signingProfileName to CfnSigningProfile"
+          },
+          "@aws-cdk/core:newStyleStackSynthesis": {
+            "recommendedValue": true,
+            "explanation": "Switch to new stack synthesis method which enables CI/CD",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:stackRelativeExports": {
+            "recommendedValue": true,
+            "explanation": "Name exports based on the construct paths relative to the stack, rather than the global construct path",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:secGroupsDisablesImplicitOpenListener": {
+            "recommendedValue": true,
+            "explanation": "Disable implicit openListener when custom security groups are provided"
+          },
+          "@aws-cdk/aws-rds:lowercaseDbIdentifier": {
+            "recommendedValue": true,
+            "explanation": "Force lowercasing of RDS Cluster names in CDK",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-apigateway:usagePlanKeyOrderInsensitiveId": {
+            "recommendedValue": true,
+            "explanation": "Allow adding/removing multiple UsagePlanKeys independently",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeVersionProps": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the  `fn.currentVersion`.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-lambda:recognizeLayerVersion": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to opt in to the updated logical id calculation for Lambda Version created using the `fn.currentVersion`."
+          },
+          "@aws-cdk/aws-cloudfront:defaultSecurityPolicyTLSv1.2_2021": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have cloudfront distributions use the security policy TLSv1.2_2021 by default.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:checkSecretUsage": {
+            "userValue": true,
+            "recommendedValue": true,
+            "explanation": "Enable this flag to make it impossible to accidentally use SecretValues in unsafe locations"
+          },
+          "@aws-cdk/core:target-partitions": {
+            "userValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "recommendedValue": [
+              "aws",
+              "aws-cn"
+            ],
+            "explanation": "What regions to include in lookup tables of environment agnostic stacks"
+          },
+          "@aws-cdk-containers/ecs-service-extensions:enableDefaultLogDriver": {
+            "recommendedValue": true,
+            "explanation": "ECS extensions will automatically add an `awslogs` driver if no logging is specified"
+          },
+          "@aws-cdk/aws-ec2:uniqueImdsv2TemplateName": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to have Launch Templates generated by the `InstanceRequireImdsv2Aspect` use unique names."
+          },
+          "@aws-cdk/aws-ecs:arnFormatIncludesClusterName": {
+            "recommendedValue": true,
+            "explanation": "ARN format used by ECS. In the new ARN format, the cluster name is part of the resource ID."
+          },
+          "@aws-cdk/aws-iam:minimizePolicies": {
+            "recommendedValue": true,
+            "explanation": "Minimize IAM policies by combining Statements"
+          },
+          "@aws-cdk/core:validateSnapshotRemovalPolicy": {
+            "recommendedValue": true,
+            "explanation": "Error on snapshot removal policies on resources that do not support it."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeyAliasStackSafeResourceName": {
+            "recommendedValue": true,
+            "explanation": "Generate key aliases that include the stack name"
+          },
+          "@aws-cdk/aws-s3:createDefaultLoggingPolicy": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature flag to create an S3 bucket policy by default in cases where an AWS service would automatically create the Policy if one does not exist."
+          },
+          "@aws-cdk/aws-sns-subscriptions:restrictSqsDescryption": {
+            "recommendedValue": true,
+            "explanation": "Restrict KMS key policy for encrypted Queues a bit more"
+          },
+          "@aws-cdk/aws-apigateway:disableCloudWatchRole": {
+            "recommendedValue": true,
+            "explanation": "Make default CloudWatch Role behavior safe for multiple API Gateways in one environment"
+          },
+          "@aws-cdk/core:enablePartitionLiterals": {
+            "recommendedValue": true,
+            "explanation": "Make ARNs concrete if AWS partition is known"
+          },
+          "@aws-cdk/aws-events:eventsTargetQueueSameAccount": {
+            "recommendedValue": true,
+            "explanation": "Event Rules may only push to encrypted SQS queues in the same account"
+          },
+          "@aws-cdk/aws-ecs:disableExplicitDeploymentControllerForCircuitBreaker": {
+            "recommendedValue": true,
+            "explanation": "Avoid setting the \"ECS\" deployment controller when adding a circuit breaker"
+          },
+          "@aws-cdk/aws-iam:importedRoleStackSafeDefaultPolicyName": {
+            "recommendedValue": true,
+            "explanation": "Enable this feature to create default policy names for imported roles that depend on the stack the role is in."
+          },
+          "@aws-cdk/aws-s3:serverAccessLogsUseBucketPolicy": {
+            "recommendedValue": true,
+            "explanation": "Use S3 Bucket Policy instead of ACLs for Server Access Logging"
+          },
+          "@aws-cdk/aws-route53-patters:useCertificate": {
+            "recommendedValue": true,
+            "explanation": "Use the official `Certificate` resource instead of `DnsValidatedCertificate`"
+          },
+          "@aws-cdk/customresources:installLatestAwsSdkDefault": {
+            "recommendedValue": false,
+            "explanation": "Whether to install the latest SDK by default in AwsCustomResource"
+          },
+          "@aws-cdk/aws-rds:databaseProxyUniqueResourceName": {
+            "recommendedValue": true,
+            "explanation": "Use unique resource name for Database Proxy"
+          },
+          "@aws-cdk/aws-codedeploy:removeAlarmsFromDeploymentGroup": {
+            "recommendedValue": true,
+            "explanation": "Remove CloudWatch alarms from deployment group"
+          },
+          "@aws-cdk/aws-apigateway:authorizerChangeDeploymentLogicalId": {
+            "recommendedValue": true,
+            "explanation": "Include authorizer configuration in the calculation of the API deployment logical ID."
+          },
+          "@aws-cdk/aws-ec2:launchTemplateDefaultUserData": {
+            "recommendedValue": true,
+            "explanation": "Define user data for a launch template by default when a machine image is provided."
+          },
+          "@aws-cdk/aws-secretsmanager:useAttachedSecretResourcePolicyForSecretTargetAttachments": {
+            "recommendedValue": true,
+            "explanation": "SecretTargetAttachments uses the ResourcePolicy of the attached Secret."
+          },
+          "@aws-cdk/aws-redshift:columnId": {
+            "recommendedValue": true,
+            "explanation": "Whether to use an ID to track Redshift column changes"
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:enableEmrServicePolicyV2": {
+            "recommendedValue": true,
+            "explanation": "Enable AmazonEMRServicePolicy_v2 managed policies"
+          },
+          "@aws-cdk/aws-ec2:restrictDefaultSecurityGroup": {
+            "recommendedValue": true,
+            "explanation": "Restrict access to the VPC default security group"
+          },
+          "@aws-cdk/aws-apigateway:requestValidatorUniqueId": {
+            "recommendedValue": true,
+            "explanation": "Generate a unique id for each RequestValidator added to a method"
+          },
+          "@aws-cdk/aws-kms:aliasNameRef": {
+            "recommendedValue": true,
+            "explanation": "KMS Alias name and keyArn will have implicit reference to KMS Key"
+          },
+          "@aws-cdk/aws-kms:applyImportedAliasPermissionsToPrincipal": {
+            "recommendedValue": true,
+            "explanation": "Enable grant methods on Aliases imported by name to use kms:ResourceAliases condition"
+          },
+          "@aws-cdk/aws-autoscaling:generateLaunchTemplateInsteadOfLaunchConfig": {
+            "recommendedValue": true,
+            "explanation": "Generate a launch template when creating an AutoScalingGroup"
+          },
+          "@aws-cdk/core:includePrefixInUniqueNameGeneration": {
+            "recommendedValue": true,
+            "explanation": "Include the stack prefix in the stack name generation process"
+          },
+          "@aws-cdk/aws-efs:denyAnonymousAccess": {
+            "recommendedValue": true,
+            "explanation": "EFS denies anonymous clients accesses"
+          },
+          "@aws-cdk/aws-opensearchservice:enableOpensearchMultiAzWithStandby": {
+            "recommendedValue": true,
+            "explanation": "Enables support for Multi-AZ with Standby deployment for opensearch domains"
+          },
+          "@aws-cdk/aws-lambda-nodejs:useLatestRuntimeVersion": {
+            "recommendedValue": true,
+            "explanation": "Enables aws-lambda-nodejs.Function to use the latest available NodeJs runtime as the default"
+          },
+          "@aws-cdk/aws-efs:mountTargetOrderInsensitiveLogicalId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, mount targets will have a stable logicalId that is linked to the associated subnet."
+          },
+          "@aws-cdk/aws-rds:auroraClusterChangeScopeOfInstanceParameterGroupWithEachParameters": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a scope of InstanceParameterGroup for AuroraClusterInstance with each parameters will change."
+          },
+          "@aws-cdk/aws-appsync:useArnForSourceApiAssociationIdentifier": {
+            "recommendedValue": true,
+            "explanation": "When enabled, will always use the arn for identifiers for CfnSourceApiAssociation in the GraphqlApi construct rather than id."
+          },
+          "@aws-cdk/aws-rds:preventRenderingDeprecatedCredentials": {
+            "recommendedValue": true,
+            "explanation": "When enabled, creating an RDS database cluster from a snapshot will only render credentials for snapshot credentials."
+          },
+          "@aws-cdk/aws-codepipeline-actions:useNewDefaultBranchForCodeCommitSource": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the CodeCommit source action is using the default branch name 'main'."
+          },
+          "@aws-cdk/aws-cloudwatch-actions:changeLambdaPermissionLogicalIdForLambdaAction": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the logical ID of a Lambda permission for a Lambda action includes an alarm ID."
+          },
+          "@aws-cdk/aws-codepipeline:crossAccountKeysDefaultValueToFalse": {
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default value for crossAccountKeys to false."
+          },
+          "@aws-cdk/aws-codepipeline:defaultPipelineTypeToV2": {
+            "recommendedValue": true,
+            "explanation": "Enables Pipeline to set the default pipeline type to V2."
+          },
+          "@aws-cdk/aws-kms:reduceCrossAccountRegionPolicyScope": {
+            "recommendedValue": true,
+            "explanation": "When enabled, IAM Policy created from KMS key grant will reduce the resource scope to this key only."
+          },
+          "@aws-cdk/pipelines:reduceAssetRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from PipelineAssetsFileRole trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-eks:nodegroupNameAttribute": {
+            "recommendedValue": true,
+            "explanation": "When enabled, nodegroupName attribute of the provisioned EKS NodeGroup will not have the cluster name prefix."
+          },
+          "@aws-cdk/aws-ec2:ebsDefaultGp3Volume": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default volume type of the EBS volume will be GP3"
+          },
+          "@aws-cdk/aws-ecs:removeDefaultDeploymentAlarm": {
+            "recommendedValue": true,
+            "explanation": "When enabled, remove default deployment alarm settings"
+          },
+          "@aws-cdk/custom-resources:logApiResponseDataPropertyTrueDefault": {
+            "recommendedValue": false,
+            "explanation": "When enabled, the custom resource used for `AwsCustomResource` will configure the `logApiResponseData` property as true by default"
+          },
+          "@aws-cdk/aws-s3:keepNotificationInImportedBucket": {
+            "recommendedValue": false,
+            "explanation": "When enabled, Adding notifications to a bucket in the current stack will not remove notification from imported stack."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:useNewS3UriParametersForBedrockInvokeModelTask": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use new props for S3 URI field in task definition of state machine for bedrock invoke model.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/core:explicitStackTags": {
+            "recommendedValue": true,
+            "explanation": "When enabled, stack tags need to be assigned explicitly on a Stack."
+          },
+          "@aws-cdk/aws-ecs:reduceEc2FargateCloudWatchPermissions": {
+            "recommendedValue": true,
+            "explanation": "When enabled, we will only grant the necessary permissions when users specify cloudwatch log group through logConfiguration"
+          },
+          "@aws-cdk/aws-dynamodb:resourcePolicyPerReplica": {
+            "recommendedValue": true,
+            "explanation": "When enabled will allow you to specify a resource policy per replica, and not copy the source table policy to all replicas"
+          },
+          "@aws-cdk/aws-ec2:ec2SumTImeoutEnabled": {
+            "recommendedValue": true,
+            "explanation": "When enabled, initOptions.timeout and resourceSignalTimeout values will be summed together."
+          },
+          "@aws-cdk/aws-appsync:appSyncGraphQLAPIScopeLambdaPermission": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a Lambda authorizer Permission created when using GraphqlApi will be properly scoped with a SourceArn."
+          },
+          "@aws-cdk/aws-rds:setCorrectValueForDatabaseInstanceReadReplicaInstanceResourceId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the value of property `instanceResourceId` in construct `DatabaseInstanceReadReplica` will be set to the correct value which is `DbiResourceId` instead of currently `DbInstanceArn`"
+          },
+          "@aws-cdk/core:cfnIncludeRejectComplexResourceUpdateCreatePolicyIntrinsics": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CFN templates added with `cfn-include` will error if the template contains Resource Update or Create policies with CFN Intrinsics that include non-primitive values."
+          },
+          "@aws-cdk/aws-lambda-nodejs:sdkV3ExcludeSmithyPackages": {
+            "recommendedValue": true,
+            "explanation": "When enabled, both `@aws-sdk` and `@smithy` packages will be excluded from the Lambda Node.js 18.x runtime to prevent version mismatches in bundled applications."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:fixRunEcsTaskPolicy": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the resource of IAM Run Ecs policy generated by SFN EcsRunTask will reference the definition, instead of constructing ARN."
+          },
+          "@aws-cdk/aws-ec2:bastionHostUseAmazonLinux2023ByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the BastionHost construct will use the latest Amazon Linux 2023 AMI, instead of Amazon Linux 2."
+          },
+          "@aws-cdk/core:aspectStabilization": {
+            "recommendedValue": true,
+            "explanation": "When enabled, a stabilization loop will be run when invoking Aspects during synthesis.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-route53-targets:userPoolDomainNameMethodWithoutCustomResource": {
+            "recommendedValue": true,
+            "explanation": "When enabled, use a new method for DNS Name of user pool domain target without creating a custom resource."
+          },
+          "@aws-cdk/aws-elasticloadbalancingV2:albDualstackWithoutPublicIpv4SecurityGroupRulesDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default security group ingress rules will allow IPv6 ingress from anywhere"
+          },
+          "@aws-cdk/aws-iam:oidcRejectUnauthorizedConnections": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the default behaviour of OIDC provider will reject unauthorized connections"
+          },
+          "@aws-cdk/core:enableAdditionalMetadataCollection": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will expand the scope of usage data collected to better inform CDK development and improve communication for security concerns and emerging issues."
+          },
+          "@aws-cdk/aws-lambda:createNewPoliciesWithAddToRolePolicy": {
+            "recommendedValue": false,
+            "explanation": "[Deprecated] When enabled, Lambda will create new inline policies with AddToRolePolicy instead of adding to the Default Policy Statement"
+          },
+          "@aws-cdk/aws-s3:setUniqueReplicationRoleName": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK will automatically generate a unique role name that is used for s3 object replication."
+          },
+          "@aws-cdk/pipelines:reduceStageRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "Remove the root account principal from Stage addActions trust policy",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-events:requireEventBusPolicySid": {
+            "recommendedValue": true,
+            "explanation": "When enabled, grantPutEventsTo() will use resource policies with Statement IDs for service principals."
+          },
+          "@aws-cdk/core:aspectPrioritiesMutating": {
+            "recommendedValue": true,
+            "explanation": "When set to true, Aspects added by the construct library on your behalf will be given a priority of MUTATING."
+          },
+          "@aws-cdk/aws-dynamodb:retainTableReplica": {
+            "recommendedValue": true,
+            "explanation": "When enabled, table replica will be default to the removal policy of source table unless specified otherwise."
+          },
+          "@aws-cdk/cognito:logUserPoolClientSecretValue": {
+            "recommendedValue": false,
+            "explanation": "When disabled, the value of the user pool client secret will not be logged in the custom resource lambda function logs."
+          },
+          "@aws-cdk/pipelines:reduceCrossAccountActionRoleTrustScope": {
+            "recommendedValue": true,
+            "explanation": "When enabled, scopes down the trust policy for the cross-account action role",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-stepfunctions:useDistributedMapResultWriterV2": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the resultWriterV2 property of DistributedMap will be used insted of resultWriter"
+          },
+          "@aws-cdk/s3-notifications:addS3TrustKeyPolicyForSnsSubscriptions": {
+            "recommendedValue": true,
+            "explanation": "Add an S3 trust policy to a KMS key resource policy for SNS subscriptions."
+          },
+          "@aws-cdk/aws-ec2:requirePrivateSubnetsForEgressOnlyInternetGateway": {
+            "recommendedValue": true,
+            "explanation": "When enabled, the EgressOnlyGateway resource is only created if private subnets are defined in the dual-stack VPC."
+          },
+          "@aws-cdk/aws-ec2-alpha:useResourceIdForVpcV2Migration": {
+            "recommendedValue": false,
+            "explanation": "When enabled, use resource IDs for VPC V2 migration"
+          },
+          "@aws-cdk/aws-s3:publicAccessBlockedByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, setting any combination of options for BlockPublicAccess will automatically set true for any options not defined."
+          },
+          "@aws-cdk/aws-lambda:useCdkManagedLogGroup": {
+            "recommendedValue": true,
+            "explanation": "When enabled, CDK creates and manages loggroup for the lambda function"
+          },
+          "@aws-cdk/aws-elasticloadbalancingv2:networkLoadBalancerWithSecurityGroupByDefault": {
+            "recommendedValue": true,
+            "explanation": "When enabled, Network Load Balancer will be created with a security group by default."
+          },
+          "@aws-cdk/aws-stepfunctions-tasks:httpInvokeDynamicJsonPathEndpoint": {
+            "recommendedValue": true,
+            "explanation": "When enabled, allows using a dynamic apiEndpoint with JSONPath format in HttpInvoke tasks.",
+            "unconfiguredBehavesLike": {
+              "v2": true
+            }
+          },
+          "@aws-cdk/aws-ecs-patterns:uniqueTargetGroupId": {
+            "recommendedValue": true,
+            "explanation": "When enabled, ECS patterns will generate unique target group IDs to prevent conflicts during load balancer replacement"
+          },
+          "@aws-cdk/aws-route53-patterns:useDistribution": {
+            "recommendedValue": true,
+            "explanation": "Use the `Distribution` resource instead of `CloudFrontWebDistribution`"
+          }
+        }
+      }
+    }
+  },
+  "minimumCliVersion": "2.1033.0"
+}

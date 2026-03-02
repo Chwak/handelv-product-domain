@@ -1,0 +1,525 @@
+# Product Domain - Data Layer Design
+
+**Purpose:** Complete product management — shelf items (products for sale), raw materials inventory, suppliers, basement storage, and product quantities.
+
+**Domain:** Product Domain (unified shelf + inventory features)
+
+**Database Prefix:** `product_`
+
+**CDK Stack:** `product-domain-stack`
+
+**API:** Single unified Product AppSync GraphQL API
+
+---
+
+## SHELF FEATURE - Tables
+
+### `products`
+
+**Partition Key:** `productId` (String, UUID)
+**Sort Key:** None
+
+**Attributes:**
+* `id` (String, PK, UUID)
+* `maker_user_id` (String) - Reference to Maker domain
+* `title` (String)
+* `description` (String)
+* `category_id` (String) - Reference to `categories` table
+* `price` (Number)
+* `quantity_available` (Number)
+* `product_type` (String) - "one_of_one" | "limited_batch" | "made_to_order"
+* `status` (String) - "draft" | "active" | "sold_out" | "paused"
+* `created_at` (String, ISO 8601)
+* `updated_at` (String, ISO 8601)
+* `published_at` (String, ISO 8601, optional) - When product went live
+
+**GSI:**
+* `GSI1`: `maker_user_id` (PK), `created_at` (SK) - Find all products by maker
+  * **Use Case:** Maker's inventory page, maker profile products
+* `GSI2`: `category_id` (PK), `created_at` (SK) - Find products by category
+  * **Use Case:** Category showcase pages
+* `GSI3`: `status` (PK), `created_at` (SK) - Find active products
+  * **Use Case:** Homepage, search results (only show active)
+* `GSI4`: `maker_user_id` (PK), `status` (SK) - Find maker's active products
+  * **Use Case:** Maker's active inventory count
+
+**TTL:** None
+
+---
+
+### `product_media`
+
+**Partition Key:** `productId` (String)
+**Sort Key:** `mediaId` (String)
+
+**Attributes:**
+* `product_id` (String, PK)
+* `position` (Number) - Order of media in gallery (0, 1, 2, ...)
+* `media_id` (String, UUID)
+* `media_type` (String) - "image" | "video"
+* `url` (String) - S3 URL or CDN URL
+* `thumbnail_url` (String, optional) - For video thumbnails
+* `alt_text` (String, optional) - Accessibility
+* `uploaded_at` (String, ISO 8601)
+
+**GSI:** None
+
+**TTL:** None
+
+---
+
+### `product_materials`
+
+**Partition Key:** `productId` (String)
+**Sort Key:** `materialId` (String)
+
+**Attributes:**
+* `product_id` (String, PK)
+* `material_id` (String, SK, UUID)
+* `material_name` (String) - "Reclaimed Oak", "Organic Cotton", etc.
+* `source` (String, optional) - "locally_sourced" | "upcycled" | "sustainable" | "custom"
+* `sustainability_flag` (Boolean, optional) - True if eco-friendly
+* `certification` (String, optional) - "organic" | "fair_trade" | "FSC" | etc.
+
+**GSI:**
+* `GSI1`: `source` (PK), `product_id` (SK) - Find products by material source
+  * **Use Case:** Filter by "upcycled" or "locally_sourced" materials
+
+**TTL:** None
+
+---
+
+### `product_process_steps`
+
+**Partition Key:** `productId` (String)
+**Sort Key:** `stepOrder` (Number)
+
+**Attributes:**
+* `product_id` (String, PK)
+* `step_order` (Number, SK) - Sequential order (1, 2, 3, ...)
+* `step_id` (String, UUID)
+* `description` (String) - Description of this step in the process
+* `media_url` (String, optional) - Image/video showing this step
+* `duration_hours` (Number, optional) - How long this step takes
+
+**GSI:** None
+
+**TTL:** None
+
+---
+
+### `product_batches`
+
+**Partition Key:** `productId` (String)
+**Sort Key:** `batchId` (String)
+
+**Attributes:**
+* `product_id` (String, PK)
+* `batch_id` (String, SK, UUID)
+* `batch_size` (Number) - Total items in this batch
+* `remaining_quantity` (Number) - Items still available
+* `created_at` (String, ISO 8601)
+* `completed_at` (String, ISO 8601, optional) - When batch sold out
+
+**GSI:** None
+
+**TTL:** None
+
+---
+
+### `product_certificates`
+
+**Partition Key:** `productId` (String)
+**Sort Key:** `certificateId` (String)
+
+**Attributes:**
+* `product_id` (String, PK)
+* `certificate_id` (String, SK, UUID)
+* `issued_at` (String, ISO 8601) - When certificate was issued
+* `qr_code_url` (String) - S3 URL to QR code image
+* `qr_code_data` (String) - Data encoded in QR code (for verification)
+* `metadata` (Map) - JSON object with:
+  * `materials_used` (List of Strings)
+  * `creation_date` (String, ISO 8601)
+  * `maker_message` (String, optional) - Personal message from maker
+  * `batch_number` (String, optional) - If part of a batch
+* `created_at` (String, ISO 8601)
+
+**GSI:**
+* `GSI1`: `certificateId` (PK) - Lookup certificate by QR code
+  * **Use Case:** Verify provenance when collector scans QR code
+
+**TTL:** None
+
+---
+
+### `categories`
+
+**Partition Key:** `categoryId` (String)
+**Sort Key:** None
+
+**Attributes:**
+* `id` (String, PK) - "ceramics", "furniture", "textiles", etc.
+* `name` (String) - "Ceramics", "Furniture", "Textiles"
+* `slug` (String) - URL-friendly version
+* `description` (String, optional)
+* `parent_id` (String, optional) - For subcategories (e.g., "dinnerware" under "ceramics")
+* `icon_url` (String, optional) - Category icon
+* `created_at` (String, ISO 8601)
+
+**GSI:**
+* `GSI1`: `parentId` (PK), `name` (SK) - Find subcategories
+  * **Use Case:** Display subcategories on category page
+
+**TTL:** None
+
+---
+
+## INVENTORY FEATURE - Tables
+
+### `material_inventory`
+
+**Partition Key:** `makerUserId` (String)
+**Sort Key:** `materialId` (String)
+
+**Attributes:**
+* `maker_user_id` (String, PK) - Reference to Maker domain
+* `material_id` (String, SK, UUID)
+* `material_name` (String) - "Reclaimed Oak", "Organic Cotton", etc.
+* `material_type` (String) - "wood" | "fabric" | "leather" | "metal" | "stone" | "glass" | "other"
+* `current_stock` (Number) - Current quantity in stock
+* `unit_of_measure` (String) - "kg" | "lbs" | "meters" | "yards" | "pieces" | "liters"
+* `reorder_threshold` (Number) - When to reorder
+* `reorder_quantity` (Number) - How much to reorder
+* `unit_cost` (Number) - Cost per unit (in cents)
+* `supplier_id` (String, optional) - Reference to `suppliers` table
+* `location` (String, optional) - Storage location in workshop
+* `source` (String, optional) - "locally_sourced" | "upcycled" | "sustainable" | "imported"
+* `sustainability_flag` (Boolean) - True if eco-friendly
+* `certification` (String, optional) - "organic" | "fair_trade" | "FSC" | etc.
+* `last_restock_date` (String, ISO 8601, optional)
+* `created_at` (String, ISO 8601)
+* `updated_at` (String, ISO 8601)
+
+**GSI:**
+* `GSI1`: `materialType` (PK), `currentStock` (SK) - Find materials by type and stock level
+  * **Use Case:** Filter materials by type, find low stock materials by type
+* `GSI2`: `stockStatus` (PK), `lastRestockDate` (SK) - Find low stock materials across makers
+  * **Use Case:** Low stock alerts and stock monitoring
+
+**TTL:** None
+
+---
+
+### `stock_movements`
+
+**Partition Key:** `makerUserId` (String)
+**Sort Key:** `movementTimestamp#materialId` (String)
+
+**Attributes:**
+* `maker_user_id` (String, PK)
+* `movement_timestamp#material_id` (String, SK) - Composite: ISO timestamp + "#" + material_id
+* `movement_id` (String, UUID)
+* `material_id` (String) - Reference to `material_inventory`
+* `movement_type` (String) - "purchase" | "usage" | "waste" | "return" | "adjustment" | "product_to_basement" | "product_from_basement"
+* `quantity` (Number) - Quantity moved (positive for purchase/return, negative for usage/waste)
+* `unit_cost` (Number, optional) - Cost per unit for this movement (in cents)
+* `total_cost` (Number, optional) - Total cost of movement (in cents)
+* `order_id` (String, optional) - If usage linked to an order (from Order domain)
+* `shelf_item_id` (String, optional) - If usage linked to a product on shelf (shelf feature)
+* `supplier_id` (String, optional) - For purchases
+* `notes` (String, optional) - Additional notes
+* `created_at` (String, ISO 8601)
+
+**GSI:**
+* `GSI1`: `materialId` (PK), `movementTimestamp` (SK) - Find movements for specific material
+  * **Use Case:** Material history, audit trail
+* `GSI2`: `movementType` (PK), `movementTimestamp` (SK) - Find movements by type
+  * **Use Case:** Analytics (total purchases, total waste, etc.)
+
+**TTL:** Auto-delete after 2 years (audit trail kept for 2 years)
+
+---
+
+### `suppliers`
+
+**Partition Key:** `makerUserId` (String)
+**Sort Key:** `supplierId` (String)
+
+**Attributes:**
+* `maker_user_id` (String, PK)
+* `supplier_id` (String, SK, UUID)
+* `supplier_name` (String) - Business name
+* `contact_name` (String, optional) - Contact person
+* `email` (String, optional)
+* `phone` (String, optional)
+* `website` (String, optional)
+* `address` (Map, optional):
+  * `street` (String)
+  * `city` (String)
+  * `state` (String)
+  * `zip` (String)
+  * `country` (String)
+* `materials_supplied` (List of Strings) - Types of materials they supply
+* `lead_time_days` (Number, optional) - Typical delivery time
+* `reliability_score` (Number, optional) - 1-5 rating
+* `sustainability_certifications` (List of Strings, optional) - "organic", "fair_trade", "FSC", etc.
+* `payment_terms` (String, optional) - "net_30" | "net_60" | "prepaid" | etc.
+* `notes` (String, optional) - Additional notes
+* `created_at` (String, ISO 8601)
+* `updated_at` (String, ISO 8601)
+
+**GSI:**
+* `GSI1`: `country` (PK), `city` (SK) - Find suppliers by location
+  * **Use Case:** Find local suppliers
+* `GSI2`: `maker_user_id` (PK), `reliability_score` (SK) - Find maker's top suppliers
+  * **Use Case:** Sort suppliers by reliability
+
+**TTL:** None
+
+---
+
+### `basement_products`
+
+**Description:** Finished products removed from shelf (unpublished/archived). Acts as storage for products makers want to keep but not actively sell.
+
+**Partition Key:** `makerUserId` (String)
+**Sort Key:** `basementItemId` (String, format: `basement#<UUID>`)
+
+**Attributes:**
+* `maker_user_id` (String)
+* `basement_item_id` (String, UUID)
+* `original_shelf_item_id` (String) - Reference to original shelf item before removal
+* `product_name` (String)
+* `product_description` (String, optional)
+* `category` (String, optional)
+* `quantity` (Number) - How many units in basement
+* `unit_cost` (Number, optional) - Cost per unit (in cents)
+* `removal_reason` (String) - "unpublished" | "seasonal" | "archived" | "out_of_stock"
+* `metadata_snapshot` (Map, optional) - Snapshot of shelf item data when moved to basement
+* `moved_to_basement_at` (String, ISO 8601)
+* `can_publisher` (Boolean) - Whether this can be moved back to shelf
+* `notes` (String, optional)
+
+**GSI:**
+* `GSI1`: `makerUserId` (PK), `movedToBasementAt` (SK) - Find recent basement moves
+  * **Use Case:** Recent removals from shelf
+* `GSI2`: `removalReason` (PK), `movedToBasementAt` (SK) - Find items by removal reason
+  * **Use Case:** Analytics on why products removed from shelf
+
+**TTL:** None
+
+---
+
+### `product_quantities`
+
+**Description:** Tracks quantity totals for products currently on the shelf. Synced with Product Domain (Shelf feature).
+
+**Partition Key:** `shelfItemId` (String)
+**Sort Key:** `makerUserId` (String)
+
+**Attributes:**
+* `shelf_item_id` (String) - Reference to product on shelf (shelf feature)
+* `maker_user_id` (String)
+* `total_quantity` (Number) - Total units available
+* `reserved_quantity` (Number) - Units reserved for pending orders
+* `available_quantity` (Number) - Units available for new orders (total - reserved)
+* `sold_quantity` (Number) - Total units sold (lifetime)
+* `product_name` (String) - Denormalized for quick lookup
+* `last_synced_at` (String, ISO 8601) - Last sync with Product Domain (Shelf feature)
+* `updated_at` (String, ISO 8601)
+
+**GSI:**
+* `GSI1`: `makerUserId` (PK), `availableQuantity` (SK) - Find products by availability
+  * **Use Case:** Low stock alerts, inventory dashboard
+* `GSI2`: `makerUserId` (PK), `soldQuantity` (SK) - Find top-selling products
+  * **Use Case:** Sales analytics
+
+**TTL:** Expires 30 days after shelf item is removed (cleanup stale data)
+
+---
+
+## Query Patterns
+
+### Get Material Inventory for Maker
+**Table:** `material_inventory`
+**Operation:** Query
+**Key:** `maker_user_id`
+**Use Case:** Maker's inventory management page
+
+### Get Low Stock Materials
+**Table:** `material_inventory`
+**Operation:** Query on GSI2
+**Key:** `maker_user_id`, filter by `current_stock < reorder_threshold`
+**Use Case:** Low stock alerts
+
+### Get Material by Type
+**Table:** `material_inventory`
+**Operation:** Query on GSI1
+**Key:** `material_type`
+**Use Case:** Filter inventory by material type
+
+### Get Stock Movement History
+**Table:** `stock_movements`
+**Operation:** Query
+**Key:** `maker_user_id`, sort by `movement_timestamp#material_id` DESC
+**Use Case:** Audit trail, movement history
+
+### Get Movements for Specific Material
+**Table:** `stock_movements`
+**Operation:** Query on GSI1
+**Key:** `material_id`
+**Use Case:** Material-specific history
+
+### Get Suppliers for Maker
+**Table:** `suppliers`
+**Operation:** Query
+**Key:** `maker_user_id`
+**Use Case:** Supplier management page
+
+### Get Local Suppliers
+**Table:** `suppliers`
+**Operation:** Query on GSI1
+**Key:** `country`, `city`
+**Use Case:** Find suppliers near maker
+
+### Get Basement Products for Maker
+**Table:** `basement_products`
+**Operation:** Query
+**Key:** `maker_user_id`
+**Use Case:** View archived/unpublished products
+
+### Get Product Quantities for Maker
+**Table:** `product_quantities`
+**Operation:** Query on GSI1
+**Key:** `maker_user_id`
+**Use Case:** Inventory dashboard
+
+---
+
+## Events Consumed (Unified Product Domain)
+
+### From Order Domain:
+
+* `LowStockAlert`
+  * Consumers: Notification Domain
+  * Data: `maker_user_id`, `material_id`, `material_name`, `current_stock`, `reorder_threshold`, `alerted_at`
+
+* `MaterialPurchased`
+  * Consumers: Analytics Domain
+  * Data: `maker_user_id`, `material_id`, `quantity`, `total_cost`, `supplier_id`, `purchased_at`
+
+* `MaterialUsed`\n  * Consumers: Analytics Domain\n  * Data: `maker_user_id`, `material_id`, `quantity`, `order_id`, `shelf_item_id`, `used_at`\n\n* `MaterialStockUpdated`
+  * Consumers: Analytics Domain, Discovery Domain
+  * Data: `maker_user_id`, `material_id`, `previous_stock`, `new_stock`, `updated_at`
+
+* `ProductMovedToBasement`
+  * Consumers: Analytics Domain, Notification Domain
+  * Data: `basement_item_id`, `maker_user_id`, `original_shelf_item_id`, `removal_reason`, `moved_at`
+
+* `ProductMovedToShelf`
+  * Consumers: Discovery Domain, Analytics Domain, Notification Domain
+  * Data: `shelf_item_id`, `maker_user_id`, `previous_basement_item_id`, `moved_at`
+
+---
+
+## Design Considerations (Unified Domain)
+
+### Shelf Feature:
+1. **Product Types:** one_of_one, limited_batch, made_to_order
+2. **Material Transparency:** Sustainability flags for eco-conscious collectors
+3. **Process Steps:** Storytelling for trust and connection
+4. **Provenance Certificates:** QR codes for authenticity
+5. **Inventory Management:** Conditional updates for race conditions
+6. **Media Ordering:** First image is featured
+
+### Inventory Feature:
+1. **Stock Movement Types:** purchase, usage, waste, return, adjustment
+2. **Basement Storage:** Finished products removed from shelf
+3. **Product Quantities:** Synced with shelf feature
+4. **Cost Tracking:** Unit costs and total costs for profitability analysis
+5. **Low Stock Alerts:** Automated notifications
+6. **Supplier Reliability:** Performance scoring
+7. **TTL on Movements:** 2-year audit trail
+
+---
+
+## Access Patterns (Unified Domain)
+
+### High Frequency (Shelf)
+* Get product by ID
+* Get active products by category
+* Get product media
+
+### High Frequency (Inventory)
+* Get material inventory
+* Record material usage
+* Check stock levels
+
+### Medium Frequency (Shelf)
+* Get maker's products
+* Get product materials
+* Get process steps
+
+### Medium Frequency (Inventory)
+* Add/update materials
+* Get low stock materials
+* Get stock movement history
+
+### Low Frequency (Shelf)
+* Get products by material source
+* Verify certificate
+* Get subcategories
+
+### Low Frequency (Inventory)
+* Manage suppliers
+* Get local suppliers
+* Analytics (cost/waste analysis)
+
+---
+
+## Data Consistency (Unified Domain)
+
+* **Strong Consistency:** All reads for detail pages, inventory management
+* **Eventual Consistency:** Event-driven updates (quantity, stock levels, alerts)
+
+---
+
+## Unified API Architecture
+
+**Product AppSync GraphQL API:**
+- Single schema with merged shelf + inventory types
+- Queries for both shelf items and materials
+- Mutations for all shelf and inventory operations
+- Subscriptions for real-time updates
+- SSM Parameter: `/product-domain/appsync/api-url`
+
+**Database Tables:**
+- Shelf: `products`, `product_media`, `product_materials`, `product_process_steps`, `product_batches`, `product_certificates`, `categories`
+- Inventory: `material_inventory`, `stock_movements`, `suppliers`, `basement_products`, `product_quantities`
+
+**Event Communication:**
+- EventBridge for inter-domain events
+- Internal coordination between shelf and inventory features
+- SSM imports for cross-domain table access (read-only)
+
+---
+
+## Deployment
+
+```bash
+cd product-domain
+npm install
+npm run build
+cdk deploy
+```
+
+**Outputs:**
+- Product AppSync API URL
+- DynamoDB table names (all product-domain tables)
+- S3 bucket names (shelf media)
+- SSM parameter paths
+
+---
+
+**END OF DATA LAYER DOCUMENTATION**

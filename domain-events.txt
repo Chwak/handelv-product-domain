@@ -1,0 +1,243 @@
+================================================================================
+PRODUCT DOMAIN - EVENT CATALOG
+================================================================================
+Domain: product-domain
+Event Source: hand-made.product-domain
+Last Updated: 2026-02-16
+
+================================================================================
+PRODUCED EVENTS
+================================================================================
+
+Event: product.shelf.item.published.v1
+Status: ✅ IMPLEMENTED & ACTIVE
+--------------------------------------------------------------------------------
+Description:
+  Published when a maker moves a product to SHELF status, making it visible
+  to collectors for browsing and purchasing.
+
+Trigger: moveProductToShelf mutation (move-product-to-shelf-lambda)
+Republish Lambda: product-republish-lambda
+Payload Schema:
+  {
+    "event": "ProductMovedToShelf",
+    "productId": "string",
+    "makerUserId": "string",
+    "title": "string",
+    "description": "string",
+    "categoryId": "string",
+    "basePrice": "number",
+    "quantityAvailable": "number",
+    "previousStatus": "DRAFT|BASEMENT",
+    "updatedAt": "ISO8601"
+  }
+Consumers: shelf-discovery-domain, notification-domain, order-domain
+
+--------------------------------------------------------------------------------
+
+Event: product.shelf.item.updated.v1
+Status: ✅ IMPLEMENTED & ACTIVE
+--------------------------------------------------------------------------------
+Description:
+  Published when significant product details are updated while on SHELF.
+  Triggers reindexing in discovery domain.
+
+Trigger: updateProduct mutation (update-product-lambda) when status=SHELF
+Republish Lambda: product-republish-lambda
+Payload Schema:
+  {
+    "event": "ProductUpdated",
+    "productId": "string",
+    "makerUserId": "string",
+    "title": "string",
+    "description": "string",
+    "basePrice": "number",
+    "quantityAvailable": "number",
+    "updatedAt": "ISO8601"
+  }
+Consumers: shelf-discovery-domain, order-domain
+
+--------------------------------------------------------------------------------
+
+Event: product.shelf.item.removed.v1
+Status: ✅ IMPLEMENTED & ACTIVE
+--------------------------------------------------------------------------------
+Description:
+  Published when product is moved from SHELF to BASEMENT (archived).
+  Triggers removal from discovery index.
+
+Trigger: moveProductToBasement mutation (move-product-to-basement-lambda)
+Republish Lambda: product-republish-lambda
+Payload Schema:
+  {
+    "event": "ProductMovedToBasement",
+    "productId": "string",
+    "makerUserId": "string",
+    "previousStatus": "SHELF",
+    "updatedAt": "ISO8601"
+  }
+Consumers: shelf-discovery-domain, notification-domain
+
+--------------------------------------------------------------------------------
+
+Event: product.stock.low.alert.v1
+Status: 🔲 PLANNED
+--------------------------------------------------------------------------------
+Description:
+  Published when product stock falls below threshold.
+
+Trigger: TBD
+Republish Lambda: TBD
+Payload Schema: TBD
+Consumers: notification-domain
+
+================================================================================
+CONSUMED EVENTS
+================================================================================
+
+Event: maker.profile.created.v1
+Source: hand-made.maker-domain
+Status: ✅ IMPLEMENTED & ACTIVE
+--------------------------------------------------------------------------------
+Handler Lambda: product-event-consumer-lambda
+EventBridge Rule Filter:
+  - detail-type = ["maker.profile.created.v1"]
+
+Action:
+  Initialize product catalog infrastructure for new maker:
+  - Create shelf metadata
+  - Initialize inventory tracking
+  - Set up personalization engine entry
+
+--------------------------------------------------------------------------------
+
+Event: collector.profile.created.v1
+Source: hand-made.collector-domain
+Status: ✅ IMPLEMENTED & ACTIVE
+--------------------------------------------------------------------------------
+Handler Lambda: product-event-consumer-lambda
+EventBridge Rule Filter:
+  - detail-type = ["collector.profile.created.v1"]
+
+Action:
+  Initialize personalization for new collector:
+  - Create recommendation profile
+  - Initialize browsing history tracking
+  - Set up personalization preferences
+
+--------------------------------------------------------------------------------
+
+Event: order.created.v1
+Source: hand-made.order-domain
+Status: 🔲 PLANNED
+--------------------------------------------------------------------------------
+Handler Lambda: product-event-consumer-lambda
+EventBridge Rule Filter:
+  - detail-type = ["order.created.v1"]
+
+Action:
+  Reserve product inventory for pending order:
+  - Decrement quantityAvailable
+  - Track reserved quantity
+  - Check if product sold out (quantity = 0)
+  - Publish product.shelf.item.sold.out.v1 if needed
+
+Note: Currently PLANNED. Once implemented, will handle inventory reservation when order created.
+
+--------------------------------------------------------------------------------
+
+Event: order.stock.confirmed.v1
+Source: hand-made.order-domain
+Status: ✅ IMPLEMENTED & ACTIVE
+--------------------------------------------------------------------------------
+Handler Lambda: order-stock-confirmed-consumer-lambda
+Action: Finalize product inventory after payment confirmed:
+  - For each hold in order: Decrement quantityAvailable, increment quantitySold
+  - Mark items as OUT_OF_STOCK if quantity reaches 0
+  - Publish product.shelf.item.updated.v1 for Discovery re-index
+Handler Location: lib/functions/lambda/event-consumer/order-stock-confirmed-consumer-lambda.ts
+EventBridge Rule: Routes order.stock.confirmed.v1 to OrderStockConfirmedConsumerQueue
+
+--------------------------------------------------------------------------------
+
+Event: order.cancelled.v1
+Source: hand-made.order-domain
+Status: 🔲 PLANNED
+--------------------------------------------------------------------------------
+Handler Lambda: product-event-consumer-lambda
+EventBridge Rule Filter:
+  - detail-type = ["order.cancelled.v1"]
+
+Action:
+  Release reserved inventory back to available:
+  - Increment quantityAvailable
+  - Update reserved quantity
+  - Publish product.shelf.item.updated.v1 if back in stock
+
+--------------------------------------------------------------------------------
+
+Event: payment.captured.v1
+Source: hand-made.payment-domain
+Status: 🔲 PLANNED
+--------------------------------------------------------------------------------
+Handler Lambda: product-event-consumer-lambda
+EventBridge Rule Filter:
+  - detail-type = ["payment.captured.v1"]
+
+Action:
+  Confirm inventory reservation to permanent sale:
+  - Move from reserved to sold
+  - Update product sales count
+  - Track for analytics and bestseller ranking
+
+--------------------------------------------------------------------------------
+
+Event: payment.refunded.v1
+Source: hand-made.payment-domain
+Status: 🔲 PLANNED
+--------------------------------------------------------------------------------
+Handler Lambda: product-event-consumer-lambda
+EventBridge Rule Filter:
+  - detail-type = ["payment.refunded.v1"]
+
+Action:
+  Return inventory to available:
+  - Increment quantityAvailable
+  - Revert sales count
+  - Publish product.shelf.item.updated.v1 if back in stock
+
+================================================================================
+DOMAIN INTEGRATION NOTES
+================================================================================
+
+Order → Payment → Payout Flow:
+1. Order Domain creates order → product.domain reserves inventory
+2. Payment Domain captures payment → product.domain confirms sale
+3. Payout Domain calculates maker earnings → no product domain action needed
+4. Order Domain ships product → product.domain may update status to SHIPPING
+
+Inventory Management:
+- Product quantity decremented on order.created
+- Quantity reserved (not available) until payment.captured
+- If payment fails or order cancelled → quantity restored
+- Discovery domain updated when quantity changes affect availability
+
+Cross-Domain Dependencies:
+- Discovery: Depends on product shelf events for search index
+- Order: Depends on product inventory availability
+- Payment: Triggers product inventory confirmation
+- Notification: Notified of sold out, low stock alerts
+--------------------------------------------------------------------------------
+Handler Lambda: TBD
+Action: Reserve product inventory, update stock count
+
+--------------------------------------------------------------------------------
+
+Event: order.cancelled.v1
+Source: hand-made.order-domain
+Status: 🔲 PLANNED
+--------------------------------------------------------------------------------
+Handler Lambda: TBD
+Action: Release reserved inventory, restore stock
+
+================================================================================

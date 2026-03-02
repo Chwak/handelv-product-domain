@@ -1,0 +1,521 @@
+================================================================================
+PRODUCT DOMAIN - SCOPE & RESPONSIBILITY
+================================================================================
+
+DOMAIN PURPOSE
+================================================================================
+
+The Product Domain manages all product-related functionality for makers, including:
+- **Shelf feature**: Handmade products actively for sale - the maker's "shelf" of available items
+- **Inventory feature**: Raw materials, suppliers, stock movements, and the "basement" (archived products)
+
+The domain uses a single unified Product AppSync API to handle both features. Products can be moved between shelf (active sale) and basement (archived/unpublished). The shelf feature is responsible for the complete lifecycle of shelf items from creation to publishing, including media, materials, process steps, and certificates.
+
+================================================================================
+WHAT THIS DOMAIN OWNS
+================================================================================
+
+Shelf Feature:
+
+1. Shelf Items (Products for Sale)
+   - Shelf item data (title, description, price, category)
+   - Shelf item status (DRAFT, PUBLISHED, PAUSED)
+   - Shelf item metadata (created_at, published_at, updated_at)
+
+2. Shelf Item Media
+   - Shelf item images and videos
+   - Media metadata
+   - Media storage (S3)
+
+3. Shelf Item Materials
+   - Materials used in products
+   - Material descriptions
+   - Material transparency data
+
+4. Process Steps
+   - Process steps for how items are made
+   - Step descriptions and images
+   - Process transparency data
+
+5. Product Batches
+   - Batch information for limited editions
+   - Batch availability tracking
+   - Batch metadata
+
+6. Provenance Certificates
+   - Authenticity certificates
+   - Certificate generation
+   - Certificate storage
+
+Inventory Feature:
+
+1. Material Inventory
+   - Raw materials tracking
+   - Stock levels and reorder thresholds
+   - Material costs and sourcing
+   - Sustainability certifications
+
+2. Basement Products
+   - Finished products removed from shelf
+   - Product metadata snapshots
+   - Archived product quantities
+   - Re-publishing capability
+
+3. Product Quantities
+   - Quantity tracking for products on shelf
+   - Sync with shelf feature
+   - Sales and restock updates
+
+4. Stock Movements
+   - Inventory change audit trail
+   - Purchase, usage, waste records
+   - Links to products/orders
+
+5. Suppliers
+   - Supplier relationships
+   - Contact information
+   - Reliability scores
+   - Sustainability certifications
+
+================================================================================
+WHAT THIS DOMAIN IS RESPONSIBLE FOR
+================================================================================
+
+Shelf Feature:
+
+1. Shelf Item Lifecycle Management
+   - Creating shelf items (draft state)
+   - Publishing shelf items (making them visible)
+   - Updating shelf items
+   - Pausing shelf items
+   - Unpublishing shelf items (moves to basement via Product Domain (Inventory feature))
+
+2. Shelf Item Validation
+   - Validating maker is verified before publishing
+   - Validating shelf item data
+   - Ensuring shelf item completeness
+
+3. Media Management
+   - Uploading shelf item media
+   - Managing media storage
+   - Generating media URLs
+   - Validating media types and sizes
+
+4. Shelf Content Management
+   - Managing product materials
+   - Managing process steps
+   - Managing batch information
+   - Generating certificates
+
+5. Product Availability
+   - Tracking shelf item availability
+   - Managing batch availability
+   - Updating availability on orders
+
+6. Event Publishing
+   - Publishing ShelfItemCreated events
+   - Publishing ShelfItemPublished events
+   - Publishing ShelfItemUpdated events
+   - Publishing ShelfItemPaused events
+   - Publishing ShelfItemUnpublished events
+   - Publishing ShelfMediaAdded events
+
+Inventory Feature:
+
+1. Material Inventory Management
+   - Tracking raw materials
+   - Monitoring stock levels
+   - Managing reorder thresholds
+   - Recording material costs
+
+2. Basement Management
+   - Storing unpublished products
+   - Tracking basement quantities
+   - Managing product metadata
+   - Enabling re-publishing
+
+3. Product Quantity Tracking
+   - Syncing quantities with shelf
+   - Updating on sales/restocks
+   - Managing basement movements
+
+4. Stock Movement Tracking
+   - Recording inventory changes
+   - Maintaining audit trails
+   - Linking to products/orders
+
+5. Supplier Management
+   - Maintaining supplier data
+   - Tracking reliability
+   - Managing certifications
+
+6. Event Publishing (Inventory)
+   - Publishing LowStockAlert events
+   - Publishing MaterialStockUpdated events
+   - Publishing ProductMovedToBasement events
+   - Publishing ProductMovedToShelf events
+
+================================================================================
+WHAT THIS DOMAIN DOES NOT OWN
+================================================================================
+
+1. Maker Profiles
+   - Maker profile data (Maker Domain)
+   - Maker verification status (Verification Trust Domain)
+   - Maker skills (Maker Domain)
+
+2. Orders
+   - Order creation (Order Domain)
+   - Order management (Order Domain)
+   - Order status (Order Domain)
+
+3. Payments
+   - Payment processing (Payment Domain)
+   - Payment methods (Payment Domain)
+
+4. Reviews
+   - Review data (Review Trust Domain)
+   - Rating data (Review Trust Domain)
+
+5. Discovery
+   - Search indexes (Discovery Domain)
+   - Discovery feeds (Discovery Domain)
+   - Recommendations (Discovery Domain)
+
+6. Collector Data
+   - Saved items (Collector Domain)
+   - Collections (Collector Domain)
+   - Wishlists (Collector Domain)
+
+================================================================================
+DOMAIN BOUNDARIES
+================================================================================
+
+1. Input Boundaries
+   - Receives shelf item creation requests
+   - Receives shelf item update requests
+   - Receives shelf item publishing requests
+   - Receives media upload requests
+   - Imports maker_profiles table via SSM (for verification check)
+   - Consumes MakerVerified events (to enable publishing)
+   - Consumes OrderCreated, OrderCanceled events (to update availability)
+   - Consumes ProductMovedFromBasement events (from Product Domain (Inventory feature))
+   - Does NOT receive order data directly
+
+2. Output Boundaries
+   - Provides shelf item data
+   - Provides shelf item media
+   - Publishes shelf item events
+   - Does NOT provide maker profile data
+   - Does NOT provide order data
+   - Notifies Product Domain (Inventory feature) on unpublish (for basement move)
+
+3. Data Boundaries
+   - Owns:
+      - `shelf_items` table (source-of-truth for products actively for sale)
+      - `shelf_media` table and S3 bucket for media
+      - `shelf_materials`, `shelf_process_steps`, `shelf_batches`, `shelf_certificates`
+   - Does NOT own:
+      - Maker profile data (Maker Domain)
+      - Order or payment records (Order/Payment Domains)
+      - Discovery indexes (Discovery Domain)
+
+   - Integration Notes:
+      - Imports `maker_profiles` (read-only) via SSM for verification checks; does not write to `maker_profiles`.
+   - Publishes `ShelfItem*` and inventory events for downstream domains; other domains must consume events rather than relying on direct DB reads where possible.
+   - Shelf and inventory features coordinate internally for basement moves and quantity tracking.
+4. Integration Boundaries
+   - Imports `maker_profiles` (read-only) via SSM for verification checks
+   - Consumes `MakerVerified`, `OrderCreated`, `OrderCanceled`, `OrderCompleted`, and `MaterialPurchasePaid` events for lifecycle updates
+   - Publishes `ShelfItem*`, `LowStockAlert`, `MaterialStockUpdated`, `ProductMovedToBasement`, and `ProductMovedToShelf` events for Discovery, Notification, Collector, and Analytics domains
+   - Does NOT directly update other domain databases (only read-only imports where required)
+   - Internal coordination between shelf and inventory features for basement storage and product quantities
+
+================================================================================
+KEY RESPONSIBILITIES
+================================================================================
+
+1. Manage Shelf Item Lifecycle
+   - Enable makers to create shelf items
+   - Enable makers to publish shelf items
+   - Enable makers to update shelf items
+   - Enable makers to pause shelf items
+   - Enable makers to unpublish (move to basement)
+
+2. Ensure Product Quality
+   - Validate maker verification before publishing
+   - Validate shelf item completeness
+   - Ensure shelf item data accuracy
+   - Maintain shelf item consistency
+
+3. Support Product Features
+   - Enable media uploads
+   - Enable material transparency
+   - Enable process step documentation
+   - Enable batch management
+   - Enable certificate generation
+
+4. Maintain Product Availability
+   - Track shelf item availability
+   - Update availability on orders
+   - Manage batch availability
+   - Handle shelf item pauses
+   - Internal coordination for quantity tracking
+
+5. Manage Material Inventory (Inventory Feature)
+   - Track raw materials
+   - Monitor stock levels
+   - Record material movements
+   - Manage suppliers
+
+6. Manage Product Storage (Inventory Feature)
+   - Store unpublished products in basement
+   - Track product quantities
+   - Enable product re-publishing
+
+================================================================================
+CROSS-DOMAIN DEPENDENCIES
+================================================================================
+
+This Domain Provides To:
+- Discovery Domain: ShelfItemPublished, ShelfItemUpdated, ShelfItemPaused, ShelfMediaAdded, MaterialStockUpdated, ProductMovedToShelf events
+- Notification Domain: ShelfItemPublished, LowStockAlert events
+- Collector Domain: ShelfItemPublished events (to enable saving)
+- Order Domain: ShelfItemPublished, ShelfItemUpdated, ShelfItemPaused events (for validation)
+- Analytics Domain: MaterialStockUpdated, ProductMovedToBasement, ProductMovedToShelf events
+
+This Domain Consumes From:
+- Maker Domain: maker_profiles table (imported via SSM), MakerVerified events
+- Order Domain: OrderCreated, OrderCanceled, OrderCompleted events (to update availability and track material usage)
+- Payment Domain: MaterialPurchasePaid events (to record stock purchases)
+
+================================================================================
+TECHNICAL SCOPE
+================================================================================
+
+Technologies:
+- DynamoDB (shelf_items, shelf_media, material_inventory, stock_movements, suppliers, basement_products, product_quantities)
+- S3 (shelf media storage)
+- Single unified Product AppSync GraphQL API
+- Lambda functions for business logic
+- Step Functions (for publishing workflow)
+
+Data Storage:
+Shelf Feature:
+- shelf_items table
+- shelf_media table
+- shelf_materials, shelf_process_steps, shelf_batches, shelf_certificates tables
+- S3 bucket for shelf media
+
+Inventory Feature:
+- material_inventory table
+- stock_movements table
+- suppliers table
+- basement_products table
+- product_quantities table
+
+API Type:
+- Single GraphQL API (Product AppSync) with unified schema for both shelf and inventory features
+
+Event Communication:
+- EventBridge for publishing and consuming events
+- SSM Parameters for importing maker_profiles table name
+- Internal coordination between shelf and inventory features for basement/quantity management
+
+================================================================================
+END OF DOCUMENTATION
+================================================================================
+
+
+# Product Domain (Inventory feature) (Merged)
+
+# Product Domain (Inventory feature)
+
+## Purpose
+The Product Domain (Inventory feature) manages all raw materials, stock levels, suppliers, material movements, and the "basement" (unpublished finished products) for makers. This domain is separate from Product Domain (Shelf feature) (which manages products actively for sale) and focuses on maker's workshop inventory management.
+
+## Scope & Responsibilities
+
+### Core Responsibilities:
+1. **Material Inventory Management**
+   - Track all raw materials makers have in stock
+   - Monitor stock levels and reorder thresholds
+   - Manage material locations within workshop
+   - Track material costs and sourcing
+
+2. **Basement Management (Finished Products Not On Shelf)**
+   - Track finished products removed from shelf (unpublished/archived)
+   - Store product metadata when moved from shelf to basement
+   - Track basement product quantities
+   - Enable re-publishing products from basement back to shelf
+
+3. **Stock Movement Tracking**
+   - Record all inventory changes (purchases, usage, waste)
+   - Provide audit trail for materials
+   - Link material usage to specific products/orders
+   - Track material costs over time
+   - Track product movements between shelf and basement
+
+4. **Product Quantity Tracking**
+   - Track total quantity per product when product is on shelf
+   - Sync with Product Domain (Shelf feature) to maintain accurate counts
+   - Update quantities when products move to/from basement
+
+5. **Supplier Management**
+   - Maintain supplier relationships
+   - Track supplier reliability and lead times
+   - Manage supplier contact information
+   - Monitor supplier sustainability certifications
+
+## Domain Boundaries
+
+### What THIS Domain Handles:
+✅ Raw material inventory (wood, leather, fabric, etc.)
+✅ Stock levels and reorder thresholds
+✅ Supplier information and relationships
+✅ Material purchase records
+✅ Material usage tracking
+✅ Inventory movements and audit trail
+✅ Basement (unpublished/archived finished products)
+✅ Product quantity totals when products are on shelf
+✅ Product movements between shelf and basement
+
+### What OTHER Domains Handle:
+❌ Active products for sale (on shelf) → **Product Domain (Shelf feature)**
+❌ Product products and public catalog → **Product Domain (Shelf feature)**
+❌ Order fulfillment → **Order Domain**
+❌ Payment for materials → **Payment Domain**
+❌ Product descriptions and media on shelf → **Product Domain (Shelf feature)**
+❌ Notifications about low stock → **Notification Domain**
+❌ Material supplier discovery/search → **Discovery Domain**
+
+### Data Boundaries
+This domain's data ownership is focused on raw materials and supplier records. Use these explicit rules to avoid duplication with Product/Order domains.
+
+   - `basement_products` (finished products removed from shelf)
+   - `product_quantities` (quantity tracking for products on shelf)
+
+- Does NOT own:
+   - Active products on shelf (Product Domain (Shelf feature))
+   - Product descriptions, media, pricing for items on shelf (Product Domain (Shelf feature))
+   - Order records or order item data (Order Domain)
+   - Payment or refund records (Payment Domain)
+
+- Integration Notes:
+  - Consumes `OrderCompleted`, `ShelfItemCreated`, `ShelfItemUnpublished`, and `MaterialPurchasePaid` events to update inventory and movements.
+  - Publishes `LowStockAlert`, `MaterialStockUpdated`, `ProductMovedToBasement`, `ProductMovedToShelf
+
+- Integration Notes:
+  - Consumes `OrderCompleted`, `ProductCreated`, and `MaterialPurchasePaid` events to update inventory and movements.
+  - Publishes `LowStockAlert` and `MaterialStockUpdated` events for Notification and Discovery domains.
+
+### Integration Boundaries
+- Consumes `OrderCompleted`, `ShelfItemCreated`, `ShelfItemUnpublished`, and `MaterialPurchasePaid` events to update inventory and movements
+- Publishes `LowStockAlert`, `MaterialStockUpdated`, `ProductMovedToBasement`, `ProductMovedToShelf` events for Notification and Discovery domains
+- Does NOT directly modify Shelf or Order domain data
+
+## Key Entities
+
+### 1. MaterialInventory
+- Raw materials makers have in stock
+- Current quantities and costs
+- Reorder thresholds and quantities
+- Sustainability certifications
+
+### 2. BasementProduct
+- Finished products removed from shelf
+- Product metadata snapshot
+- Quantity tracking
+- Removal reason and timestamp
+- Re-publishing capability
+
+### 3. ProductQuantity
+- Quantity tracking for products currently on shelf
+- Synced with Product Domain (Shelf feature)
+- Updated on sales and restocks
+- Links to shelf item ID
+
+### 4. StockMovement
+- Audit trail of all inventory changes
+- Purchase, usage, waste, returns
+- Links to orders and products
+
+### 3. Supplier
+- Material supplier information
+- Reliability scores and lead times
+- Contact details and payment terms
+- Sustainability certifications
+
+## Integration Points
+
+### Inputs (Events from other domains):
+- **Order Domain**: `OrderCompleted` → Trigger material usage recording
+- **Product Domain**: `ProductCreated` → Link materials to products
+- **Payment Domain**: `MaterialPurchasePaid` → Record stock purchase
+
+### Outputs (Events to other domains):
+- **Notification Domain**: `LowStockAlert` → Alert maker about low stock
+- **Discovery Domain**: `MaterialStockUpdated` → Update search index
+- **Product Domain**: `MaterialAvailabilityChanged` → Update product status
+
+## GraphQL API
+
+### Queries:
+- `getMaterialInventory`
+- `listMaterialInventory`
+- `getLowStockMaterials`
+- `getStockMovements`
+- `listSuppliers`
+
+### Mutations:
+- `addMaterialToInventory`
+- `updateMaterialStock`
+- `recordStockMovement`
+- `addSupplier`
+- `updateSupplier`
+
+### Subscriptions:
+- `onLowStock` → Real-time low stock alerts
+- `onStockMovement` → Real-time movement tracking
+
+## DynamoDB Tables
+
+### 1. material_inventory_table
+- **PK**: `makerUserId`
+- **SK**: `materialId`
+- **GSI1**: By `materialType` + `currentStock`
+- **GSI2**: By `stockStatus` + `lastRestockDate`
+
+### 2. stock_movements_table
+- **PK**: `makerUserId`
+- **SK**: `movementTimestamp#materialId`
+- **GSI1**: By `materialId` + `movementTimestamp`
+- **GSI2**: By `movementType` + `movementTimestamp`
+- **TTL**: Auto-delete after 2 years
+
+### 3. suppliers_table
+- **PK**: `makerUserId`
+- **SK**: `supplierId`
+- **GSI1**: By `country` + `city`
+- **GSI2**: By `makerUserId` + `reliabilityScore`
+
+## Deployment
+
+```bash
+cd product-domain
+npm install
+npm run build
+npm run deploy
+```
+
+## Cross-Domain References
+
+### Exports (via SSM):
+- `/${environment}/product-domain/dynamodb/material-inventory-table-name`
+- `/${environment}/product-domain/dynamodb/stock-movements-table-name`
+- `/${environment}/product-domain/dynamodb/suppliers-table-name`
+
+### Imports:
+- Maker Domain: For maker authentication/authorization
+- Order Domain: For linking material usage to orders
+- Product Domain: For linking materials to products
