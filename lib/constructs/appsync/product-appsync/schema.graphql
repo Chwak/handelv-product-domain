@@ -94,9 +94,20 @@ type Product {
   certificates: [Certificate!]
   createdAt: AWSDateTime!
   updatedAt: AWSDateTime!
+  passportSeal: PassportSeal
 }
 
 type WaitlistEntry {
+  # PassportSeal — provenance record for commissioned Masterpieces
+  type PassportSeal {
+    proposalId: ID!
+    collectorId: ID!
+    makerId: ID!
+    commissionedAt: AWSDateTime!
+    sealedAt: AWSDateTime!
+  }
+
+  type WaitlistEntry {
   email: String!
   interest: WaitlistInterest!
   source: String!

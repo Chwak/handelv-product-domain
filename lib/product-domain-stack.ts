@@ -39,6 +39,7 @@ import { GetSupplierLambdaConstruct } from "./constructs/lambda/inventory/get-su
 import { RemoveSupplierLambdaConstruct } from "./constructs/lambda/inventory/remove-supplier/remove-supplier-lambda-construct";
 import { ProductEventConsumerLambdaConstruct } from "./constructs/lambda/event-consumer/product-event-consumer-lambda-construct";
 import { PaymentEventConsumerLambdaConstruct } from "./constructs/lambda/event-consumer/payment-event-consumer-lambda-construct";
+import { CommissionReadyForShelfConsumerLambdaConstruct } from "./constructs/lambda/event-consumer/commission-ready-for-shelf-consumer-lambda-construct";
 import { importEventBusFromSharedInfra } from "./utils/eventbridge-helper";
 
 export class ProductDomainStack extends cdk.Stack {
@@ -176,6 +177,14 @@ export class ProductDomainStack extends cdk.Stack {
       productsTable: productTables.productsTable,
       outboxTable: outboxTable.table,
       idempotencyTable,
+      removalPolicy,
+    });
+
+    new CommissionReadyForShelfConsumerLambdaConstruct(this, "CommissionReadyForShelfConsumer", {
+      environment: props.environment,
+      regionCode: props.regionCode,
+      eventBus: sharedEventBus,
+      productsTable: productTables.productsTable,
       removalPolicy,
     });
 
