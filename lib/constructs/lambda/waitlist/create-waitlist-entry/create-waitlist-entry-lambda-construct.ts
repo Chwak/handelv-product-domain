@@ -40,7 +40,7 @@ export class CreateWaitlistEntryLambdaConstruct extends Construct {
           statements: [
             new iam.PolicyStatement({
               effect: iam.Effect.ALLOW,
-              actions: ["dynamodb:PutItem", "dynamodb:GetItem"],
+              actions: ["dynamodb:PutItem", "dynamodb:GetItem", "dynamodb:UpdateItem"],
               resources: [props.waitlistTable.tableArn],
             }),
           ],

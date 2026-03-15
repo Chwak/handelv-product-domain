@@ -8,8 +8,30 @@ const TABLE_NAME = process.env.PRODUCTS_TABLE_NAME;
 
 interface GenerateCertificateInput {
   productId?: unknown;
-  batchId?: unknown;
-  recipientName?: unknown;
+  orderId?: unknown;
+  materialMetadata?: unknown;
+  creationMetadata?: unknown;
+}
+
+function normalizeAwsJsonInput(value: unknown): string | null {
+  if (typeof value === 'string') {
+    try {
+      JSON.parse(value);
+      return value;
+    } catch {
+      return null;
+    }
+  }
+
+  if (value !== null && value !== undefined && typeof value === 'object') {
+    try {
+      return JSON.stringify(value);
+    } catch {
+      return null;
+    }
+  }
+
+  return null;
 }
 
 export const handler = async (event: { arguments?: { input?: GenerateCertificateInput }; identity?: any }) => {
@@ -19,13 +41,15 @@ export const handler = async (event: { arguments?: { input?: GenerateCertificate
   const input = event.arguments?.input || {};
   const productId = validateId(input.productId);
   if (!productId) throw new Error('Invalid input format');
+  const orderId = validateId(input.orderId);
+  if (!orderId) throw new Error('Invalid input format');
 
   const auth = requireAuthenticatedUser(event);
   if (!auth) throw new Error('Not authenticated');
 
-  const recipientName = typeof input.recipientName === 'string' ? input.recipientName.trim() : '';
-  const batchId = input.batchId ? validateId(input.batchId) : null;
-  if (recipientName.length < 1 || recipientName.length > 200) throw new Error('Invalid input format');
+  const materialMetadata = normalizeAwsJsonInput(input.materialMetadata);
+  const creationMetadata = normalizeAwsJsonInput(input.creationMetadata);
+  if (!materialMetadata || !creationMetadata) throw new Error('Invalid input format');
 
   const client = DynamoDBDocumentClient.from(new DynamoDBClient({}));
   const existing = await client.send(
@@ -35,12 +59,15 @@ export const handler = async (event: { arguments?: { input?: GenerateCertificate
   if (existing.Item.makerUserId !== auth) throw new Error('Forbidden');
 
   const certificateId = randomUUID();
-  const now = new Date().toISOString();
+  const createdAt = new Date().toISOString();
   const newItem = {
+    productId,
     certificateId,
-    batchId: batchId ?? undefined,
-    recipientName,
-    issuedAt: now,
+    orderId,
+    qrCode: `cert:${productId}:${certificateId}`,
+    materialMetadata,
+    creationMetadata,
+    createdAt,
   };
 
   await client.send(

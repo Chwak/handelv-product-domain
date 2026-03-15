@@ -1,5 +1,5 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DynamoDBDocumentClient, GetCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, GetCommand, PutCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { initTelemetryLogger } from "../../../../utils/telemetry-logger";
 
 const TABLE_NAME = process.env.WAITLIST_TABLE_NAME;
@@ -34,6 +34,14 @@ function normalizeSource(raw: unknown): string | null {
   const trimmed = raw.trim();
   if (!trimmed || trimmed.length > 100) return null;
   return trimmed;
+}
+
+function mergeInterest(existingRaw: unknown, incoming: string): string {
+  if (typeof existingRaw !== "string") return incoming;
+  const existing = existingRaw.trim().toUpperCase();
+  if (!INTEREST_VALUES.has(existing)) return incoming;
+  if (existing === incoming) return existing;
+  return "BOTH";
 }
 
 export const handler = async (event: { arguments?: { input?: CreateWaitlistEntryInput } }) => {
@@ -81,5 +89,38 @@ export const handler = async (event: { arguments?: { input?: CreateWaitlistEntry
     })
   );
 
-  return existing.Item ?? item;
+  const current = existing.Item;
+  if (!current) return item;
+
+  const mergedInterest = mergeInterest(current.interest, interest);
+  const currentSource = typeof current.source === "string" && current.source.trim() ? current.source.trim() : "landing";
+  const mergedSource = currentSource === source ? currentSource : source;
+
+  if (mergedInterest === current.interest && mergedSource === currentSource) {
+    return current;
+  }
+
+  const updated = await client.send(
+    new UpdateCommand({
+      TableName: TABLE_NAME,
+      Key: { email },
+      UpdateExpression: "SET interest = :interest, #src = :source, updatedAt = :updatedAt",
+      ExpressionAttributeNames: {
+        "#src": "source",
+      },
+      ExpressionAttributeValues: {
+        ":interest": mergedInterest,
+        ":source": mergedSource,
+        ":updatedAt": now,
+      },
+      ReturnValues: "ALL_NEW",
+    })
+  );
+
+  return updated.Attributes ?? {
+    ...current,
+    interest: mergedInterest,
+    source: mergedSource,
+    updatedAt: now,
+  };
 };

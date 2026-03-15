@@ -42,7 +42,7 @@ type Mutation @aws_cognito_user_pools {
   addSupplier(input: AddSupplierInput!): Supplier
   updateSupplier(input: UpdateSupplierInput!): Supplier
   removeSupplier(makerUserId: ID!, supplierId: ID!): Boolean
-  createWaitlistEntry(input: CreateWaitlistEntryInput!): WaitlistEntry @aws_api_key
+  createWaitlistEntry(input: CreateWaitlistEntryInput!): WaitlistEntry
 }
 
 type Subscription @aws_cognito_user_pools {
@@ -97,17 +97,15 @@ type Product {
   passportSeal: PassportSeal
 }
 
-type WaitlistEntry {
-  # PassportSeal — provenance record for commissioned Masterpieces
-  type PassportSeal {
-    proposalId: ID!
-    collectorId: ID!
-    makerId: ID!
-    commissionedAt: AWSDateTime!
-    sealedAt: AWSDateTime!
-  }
+type PassportSeal {
+  proposalId: ID!
+  collectorId: ID!
+  makerId: ID!
+  commissionedAt: AWSDateTime!
+  sealedAt: AWSDateTime!
+}
 
-  type WaitlistEntry {
+type WaitlistEntry {
   email: String!
   interest: WaitlistInterest!
   source: String!
