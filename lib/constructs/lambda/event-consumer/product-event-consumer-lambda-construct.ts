@@ -104,7 +104,10 @@ export class ProductEventConsumerLambdaConstruct extends Construct {
       new iam.PolicyStatement({
         effect: iam.Effect.ALLOW,
         actions: ["glue:GetSchema", "glue:GetSchemaVersion"],
-        resources: ["*"],
+        resources: [
+          `arn:${cdk.Aws.PARTITION}:glue:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:registry/${props.schemaRegistryName}`,
+          `arn:${cdk.Aws.PARTITION}:glue:${cdk.Aws.REGION}:${cdk.Aws.ACCOUNT_ID}:schema/${props.schemaRegistryName}/*`,
+        ],
       })
     );
 

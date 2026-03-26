@@ -89,7 +89,7 @@ export class ProductAppSyncConstruct extends Construct {
 
     const waitlistApiKey = new appsync.CfnApiKey(this, 'WaitlistPublicApiKey', {
       apiId: this.api.apiId,
-      expires: Math.floor(Date.now() / 1000) + 365 * 24 * 60 * 60,
+      expires: Math.floor(Date.now() / 1000) + 30 * 24 * 60 * 60,
       description: 'Public API key for pre-launch waitlist submission',
     });
 
